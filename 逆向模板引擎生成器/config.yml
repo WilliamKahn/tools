@@ -1,0 +1,26 @@
+mysqlConfig:
+  host: 192.168.99.14
+  user: root
+  password: test@T123
+  database: test
+
+tableName: sale_sales_type
+tableRemark: 销售类型
+
+mysqlConvert:
+  bigint: Long
+  int: Integer
+  varchar: String
+  datetime: LocalDateTime
+
+projectPath: C:\Users\Solaire\IdeaProjects\CMSS\Service\b.sales.basic
+
+template:
+  Model: ltd.mlj.cmss.service.b.sales.model
+  Mapper: ltd.mlj.cmss.service.b.sales.mapper
+  Service: ltd.mlj.cmss.service.b.sales.service
+  ServiceImpl: ltd.mlj.cmss.service.b.sales.service.impl
+  Controller: ltd.mlj.cmss.service.b.sales.controller
+  Dto: ltd.mlj.cmss.service.b.sales.dto
+  QueryVo: ltd.mlj.cmss.service.b.sales.vo
+  Vo: ltd.mlj.cmss.service.b.sales.vo

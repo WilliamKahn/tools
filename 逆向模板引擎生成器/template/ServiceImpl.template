@@ -1,0 +1,118 @@
+package {{ packages['ServiceImpl'] }};
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import java.time.LocalDateTime;
+import java.util.List;
+import javax.annotation.Resource;
+import ltd.mlj.cmss.common.vo.BatchEntityVo;
+import ltd.mlj.cmss.domain.exception.PlatformException;
+import ltd.mlj.cmss.enums.ResponseCode;
+import ltd.mlj.cmss.service.b.sales.constant.Constant;
+import ltd.mlj.cmss.util.CommonBeanUtils;
+import org.springframework.stereotype.Service;
+import {{ packages['Dto'] }}.{{ TableName }}Dto;
+import {{ packages['Mapper'] }}.{{ TableName }}Mapper;
+import {{ packages['Model'] }}.{{ TableName }};
+import {{ packages['Service'] }}.{{ TableName }}Service;
+import {{ packages['QueryVo'] }}.{{ TableName }}QueryVo;
+import {{ packages['Vo'] }}.{{ TableName }}Vo;
+
+/**
+ *
+ * @author wanglk
+ */
+@Service
+public class {{ TableName }}ServiceImpl extends ServiceImpl<{{ TableName }}Mapper, {{ TableName }}> implements {{ TableName }}Service {
+
+    @Resource
+    private {{ TableName }}Mapper {{ tableName }}Mapper;
+
+    @Override
+    public void add{{ TableName }}({{ TableName }}Vo {{ tableName }}Vo) {
+        //组织id
+        long companyId = {{ tableName }}Vo.getCompanyId();
+        //用户id
+        long personId = {{ tableName }}Vo.getPersonId();
+        //Vo转model
+        {{ TableName }} {{ tableName }} = CommonBeanUtils.dtoTransfer({{ tableName }}Vo, {{ TableName }}.class);
+        {{ tableName }}.setCompanyId(companyId);
+        {{ tableName }}.setStatus(Constant.IS_AVAILABLE_YES);
+        {{ tableName }}.setCreateUser(personId);
+        {{ tableName }}.setCreateTime(LocalDateTime.now());
+        {{ tableName }}Mapper.insert({{ tableName }});
+    }
+
+    @Override
+    public void update{{ TableName }}({{ TableName }}Vo {{ tableName }}Vo) {
+        //用户id
+        long personId = {{ tableName }}Vo.getPersonId();
+        //Vo转model
+        {{ TableName }} {{ tableName }} = CommonBeanUtils.dtoTransfer({{ tableName }}Vo, {{ TableName }}.class);
+        {{ tableName }}.setUpdateUser(personId);
+        {{ tableName }}.setUpdateTime(LocalDateTime.now());
+        {{ tableName }}Mapper.updateById({{ tableName }});
+    }
+
+    @Override
+    public void delete{{ TableName }}({{ TableName }}Vo {{ tableName }}Vo) {
+        //用户id
+        Long personId = {{ tableName }}Vo.getPersonId();
+        {{ tableName }}.setId({{ tableName }}Vo.getId());
+        {{ tableName }}.setStatus(Constant.IS_AVAILABLE_NO);
+        {{ tableName }}.setUpdateUser(personId);
+        {{ tableName }}.setUpdateTime(LocalDateTime.now());
+        {{ tableName }}Mapper.updateById({{ tableName }});
+    }
+
+    @Override
+	public void updateStatus(BatchEntityVo batchEntityVo) {
+        //batchEntityVo为空抛出异常
+		if (batchEntityVo == null) {
+			throw new PlatformException.InvalidParamException(ResponseCode.PARAMETER_ERROR.msg());
+		}
+		List<Long> ids = batchEntityVo.getIds();
+		{{ TableName }} {{ tableName }};
+		for (Long id : ids) {
+		    {{ tableName }} = new {{ TableName }}();
+		    {{ tableName }}.setId(id);
+		    {{ tableName }}.setStatus(batchEntityVo.getStatus());
+		    {{ tableName }}Mapper.updateById({{ tableName }});
+		}
+	}
+
+    @Override
+    public List<{{ TableName }}Dto> selectList({{ TableName }}QueryVo {{ tableName }}QueryVo) {
+        //组织id
+        Long companyId = {{ tableName }}QueryVo.getCompanyId();
+        //筛选条件
+        LambdaQueryWrapper<{{ TableName }}> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(companyId != null, {{ TableName }}::getCompanyId, companyId);
+        //列表查询
+        List<{{ TableName }}> list = {{ tableName }}Mapper.selectList(wrapper);
+        //model转dto
+        List<{{ TableName }}Dto> dtoList = CommonBeanUtils.dtoListTransfer(list, {{ TableName }}Dto.class);
+        return dtoList;
+    }
+
+    @Override
+    public Page<{{ TableName }}Dto> selectPage({{ TableName }}QueryVo {{ tableName }}QueryVo) {
+        //组织id
+        Long companyId = {{ tableName }}QueryVo.getCompanyId();
+        //筛选条件
+        LambdaQueryWrapper<{{ TableName }}> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(companyId != null, {{ TableName }}::getCompanyId, companyId);
+        //分页条件
+        Page<{{ TableName }}> page = new Page<>({{ tableName }}QueryVo.getCurrentPage(), {{ tableName }}QueryVo.getPageSize());
+        //列表查询
+        IPage<{{ TableName }}> iPage = {{ tableName }}Mapper.selectPage(page, wrapper);
+        //model转dto
+        List<{{ TableName }}Dto> dtoList = CommonBeanUtils.dtoListTransfer(iPage.getRecords(), {{ TableName }}Dto.class);
+        //iPage转dto
+        Page<{{ TableName }}Dto> dtoPage = CommonBeanUtils.dtoTransfer(iPage, Page.class);
+        dtoPage.setRecords(dtoList);
+        return dtoPage;
+    }
+}

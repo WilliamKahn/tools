@@ -1,0 +1,15 @@
+package {{ packages['Mapper'] }};
+
+import ltd.mlj.cmss.service.b.sales.model.{{ TableName }};
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+/**
+ * <p>
+ * {{ table_remark }}表  Mapper 接口
+ * </p>
+ *
+ * @author wanglk
+ */
+public interface {{ TableName }}Mapper extends BaseMapper<{{ TableName }}> {
+
+}

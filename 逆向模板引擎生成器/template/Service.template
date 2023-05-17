@@ -1,0 +1,67 @@
+package {{ packages['Service'] }};
+
+import java.util.List;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.IService;
+import ltd.mlj.cmss.common.vo.BatchEntityVo;
+import {{ packages['Dto'] }}.{{ TableName }}Dto;
+import {{ packages['QueryVo'] }}.{{ TableName }}QueryVo;
+import {{ packages['Vo'] }}.{{ TableName }}Vo;
+import {{ packages['Model'] }}.{{ TableName }};
+
+
+/**
+ * <p>
+ * {{ table_remark }}表  服务类
+ * </p>
+ *
+ * @author wanglk
+ */
+public interface {{ TableName }}Service extends IService<{{ TableName }}> {
+
+    /**
+	 * 新增{{ table_remark }}
+	 *
+	 * @param {{ tableName }}Vo
+	 */
+    void add{{ TableName }}({{ TableName }}Vo {{ tableName }}Vo);
+
+    /**
+	 * 修改{{ table_remark }}
+	 *
+	 * @param {{ tableName }}Vo
+	 */
+    void update{{ TableName }}({{ TableName }}Vo {{ tableName }}Vo);
+
+    /**
+	 * 删除{{ table_remark }}
+	 *
+	 * @param {{ tableName }}Vo
+	 */
+    void delete{{ TableName }}({{ TableName }}Vo {{ tableName }}Vo);
+
+    /**
+	 * {{ table_remark }}启用/禁用/删除
+	 *
+	 * @param batchEntityVo
+	 */
+	void updateStatus(BatchEntityVo batchEntityVo);
+
+    /**
+	 * {{ table_remark }}列表
+	 *
+	 * @param {{ TableName }}QueryVo
+	 */
+    List<{{ TableName }}Dto> selectList({{ TableName }}QueryVo {{ TableName }}QueryVo);
+
+    /**
+	 * {{ table_remark }}列表分页
+	 *
+	 * @param {{ TableName }}QueryVo
+	 */
+    Page<{{ TableName }}Dto> selectPage({{ TableName }}QueryVo {{ TableName }}QueryVo);
+
+}
+
+
+

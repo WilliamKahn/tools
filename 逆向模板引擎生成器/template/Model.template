@@ -1,0 +1,36 @@
+package {{ packages['Model'] }};
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.TableField;
+import java.time.LocalDateTime;
+import java.io.Serializable;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+
+/**
+ * <p>
+ * {{ table_remark }}表
+ * </p>
+ *
+ * @author wanglk
+ */
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+@ApiModel(value = "{{ TableName }}对象", description = "{{ table_remark }}表")
+@TableName(value = "{{ table_name }}")
+public class {{ TableName }} implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+{% for column in columns %}
+    @ApiModelProperty(value = "{{ column[3] }}"){% if column[0] == 'id' %}
+    @TableId(value = "{{ column[4] }}", type = IdType.AUTO){% else %}
+    @TableField("{{ column[4] }}"){% endif %}
+    private {{ column[2] }} {{ column[0] }};
+{% endfor %}
+}

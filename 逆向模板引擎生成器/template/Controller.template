@@ -1,0 +1,73 @@
+package {{ packages['Controller'] }};
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.ApiOperation;
+import java.util.List;
+import javax.annotation.Resource;
+import javax.validation.Valid;
+import ltd.mlj.cmss.common.vo.BatchEntityVo;
+import ltd.mlj.cmss.domain.service.Result;
+import ltd.mlj.cmss.enums.ResponseCode;
+import {{ packages['Dto']}}.{{ TableName }}Dto;
+import {{ packages['Service']}}.{{ TableName }}Service;
+import {{ packages['QueryVo']}}.{{ TableName }}QueryVo;
+import {{ packages['Vo']}}.{{ TableName }}Vo;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * @author wanglk
+ */
+@RestController
+@RequestMapping("{{ table_name|replace('_', '/') }}")
+public class {{ TableName }}Controller {
+
+    @Resource
+    private {{ TableName }}Service {{ tableName }}Service;
+
+    @PostMapping("/add")
+    @ApiOperation("新增{{ table_remark }}")
+    public Result<Boolean> add{{ TableName }}(@RequestBody {{ TableName }}Vo {{ tableName }}Vo, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return Result.failure(ResponseCode.PARAMETER_ERROR, bindingResult.getFieldError().getDefaultMessage());
+        }
+        {{ tableName }}Service.add{{ TableName }}({{ tableName }}Vo);
+        return Result.success(true);
+    }
+
+    @PostMapping("/edit")
+    @ApiOperation("修改{{ table_remark }}")
+    public Result<Boolean> update{{ TableName }}(@RequestBody {{ TableName }}Vo {{ tableName }}Vo, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return Result.failure(ResponseCode.PARAMETER_ERROR, bindingResult.getFieldError().getDefaultMessage());
+        }
+        {{ tableName }}Service.update{{ TableName }}({{ tableName }}Vo);
+        return Result.success(true);
+    }
+
+    @PostMapping("/status")
+    @ApiOperation("{{ table_remark }}启用/禁用/删除")
+    public Result<Boolean> status(@RequestBody BatchEntityVo batchEntityVo) {
+        {{ tableName }}Service.updateStatus(batchEntityVo);
+        return Result.success(true);
+    }
+
+    @PostMapping("/page")
+    @ApiOperation("{{ table_remark }}分页列表")
+    public Result<Page<{{ TableName }}Dto>> selectPage(@RequestBody {{ TableName }}QueryVo {{ tableName }}QueryVo) {
+        Page<{{ TableName }}Dto> {{ tableName }}DtoPage = {{ tableName }}Service.selectPage({{ tableName }}QueryVo);
+        return Result.success({{ tableName }}DtoPage);
+    }
+
+    @PostMapping("/list")
+    @ApiOperation("{{ table_remark }}列表")
+    public Result<List<{{ TableName }}Dto>> selectList(@RequestBody {{ TableName }}QueryVo {{ tableName }}QueryVo) {
+        List<{{ TableName }}Dto> {{ tableName }}DtoList = {{ tableName }}Service.selectList({{ tableName }}QueryVo);
+        return Result.success({{ tableName }}DtoList);
+    }
+
+}
+
