@@ -8,14 +8,17 @@ from jinja2 import Template
 # 读取配置
 with open('./config.yml', 'r', encoding='utf-8') as f:
     config = yaml.load(f.read(), Loader=yaml.FullLoader)
-JAVA_FILE_MODEL = config['template']
-MYSQL_TO_JAVA_TYPES = config['mysqlConvert']
-PROJECT_PATH = config['projectPath']
-table_name = config['tableName']
-table_remark = config['tableRemark']
+# 需要模板生成的引擎
+template = config['template']
+# 字段映射
+field_mapping = config['field-mapping']
+# 项目路径
+project_path = config['project-path']
+table_name = config['table-name']
+table_remark = config['table-remark']
 # 连接数据库
 conn = pymysql.connect(
-    **config['mysqlConfig']
+    **config['mysql-config']
 )
 
 
@@ -37,7 +40,7 @@ for row in columns:
     parameter = [
         snake_to_camel(row[0]),
         row[0].title().replace('_', ''),
-        MYSQL_TO_JAVA_TYPES[re.sub(r'\([0-9]*\)', '', row[1])],
+        field_mapping[re.sub(r'\([0-9]*\)', '', row[1])],
         row[8],
         row[0]
     ]
@@ -46,7 +49,11 @@ for row in columns:
 # 关闭数据库连接
 conn.close()
 
-for key, value in JAVA_FILE_MODEL.items():
+for key, value in template.items():
+    # 模块
+    module = value['module']
+    # 包名
+    package = value['package']
     # 读取模板文件
     with open(f'template/{key}.template', 'r', encoding='utf-8') as f:
         template = Template(f.read())
@@ -59,11 +66,11 @@ for key, value in JAVA_FILE_MODEL.items():
         TableName=TableName,
         tableName=tableName,
         columns=parameters,
-        packages=JAVA_FILE_MODEL
+        packages=template
     )
     if key == 'Model':
         key = ''
-    path = f'{PROJECT_PATH}/src/main/java/{value.replace(".", "/")}'
+    path = f'{project_path}/{module.replace(".", "/")}/src/main/java/{package.replace(".", "/")}'
     # 路径不存在先生成
     if not os.path.exists(path):
         os.makedirs(path)

@@ -1,26 +1,42 @@
-mysqlConfig:
+mysql-config:
   host: 192.168.99.14
   user: root
   password: test@T123
   database: test
 
-tableName: sale_sales_type
-tableRemark: 销售类型
+table-name: sale_sales_type
+table-remark: 销售类型
 
-mysqlConvert:
+field-mapping:
   bigint: Long
   int: Integer
   varchar: String
   datetime: LocalDateTime
 
-projectPath: C:\Users\Solaire\IdeaProjects\CMSS\Service\b.sales.basic
+project-path: C:\Users\admin\IdeaProjects\movie-parent
 
 template:
-  Model: ltd.mlj.cmss.service.b.sales.model
-  Mapper: ltd.mlj.cmss.service.b.sales.mapper
-  Service: ltd.mlj.cmss.service.b.sales.service
-  ServiceImpl: ltd.mlj.cmss.service.b.sales.service.impl
-  Controller: ltd.mlj.cmss.service.b.sales.controller
-  Dto: ltd.mlj.cmss.service.b.sales.dto
-  QueryVo: ltd.mlj.cmss.service.b.sales.vo
-  Vo: ltd.mlj.cmss.service.b.sales.vo
+  Model:
+    module: api
+    package: ltd.mlj.cmss.service.b.sales.model
+  Mapper:
+    module: mapper
+    package: ltd.mlj.cmss.service.b.sales.mapper
+  Service:
+    module: Service
+    package: ltd.mlj.cmss.service.b.sales.service
+  ServiceImpl:
+    module: Service
+    package: ltd.mlj.cmss.service.b.sales.service.impl
+  Controller:
+    module: controller
+    package: ltd.mlj.cmss.service.b.sales.controller
+  Dto:
+    module: dto
+    package: ltd.mlj.cmss.service.b.sales.dto
+  QueryVo:
+    module: vo
+    package: ltd.mlj.cmss.service.b.sales.vo
+  Vo:
+    module: vo
+    package: ltd.mlj.cmss.service.b.sales.vo
