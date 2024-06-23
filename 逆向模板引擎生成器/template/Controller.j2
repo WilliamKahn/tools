@@ -5,9 +5,6 @@ import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import ltd.mlj.cmss.common.vo.BatchEntityVo;
-import ltd.mlj.cmss.domain.service.Result;
-import ltd.mlj.cmss.enums.ResponseCode;
 import {{ packages['Dto']}}.{{ TableName }}Dto;
 import {{ packages['Service']}}.{{ TableName }}Service;
 import {{ packages['QueryVo']}}.{{ TableName }}QueryVo;
@@ -28,45 +25,37 @@ public class {{ TableName }}Controller {
     @Resource
     private {{ TableName }}Service {{ tableName }}Service;
 
-    @PostMapping("/add")
+    @PostMapping()
     @ApiOperation("新增{{ table_remark }}")
-    public Result<Boolean> add{{ TableName }}(@RequestBody {{ TableName }}Vo {{ tableName }}Vo, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return Result.failure(ResponseCode.PARAMETER_ERROR, bindingResult.getFieldError().getDefaultMessage());
-        }
+    public Result<Boolean> add{{ TableName }}(@RequestBody {{ TableName }}Vo {{ tableName }}Vo) {
         {{ tableName }}Service.add{{ TableName }}({{ tableName }}Vo);
         return Result.success(true);
     }
 
-    @PostMapping("/edit")
+    @PutMapping()
     @ApiOperation("修改{{ table_remark }}")
-    public Result<Boolean> update{{ TableName }}(@RequestBody {{ TableName }}Vo {{ tableName }}Vo, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return Result.failure(ResponseCode.PARAMETER_ERROR, bindingResult.getFieldError().getDefaultMessage());
-        }
+    public Result<Boolean> update{{ TableName }}(@RequestBody {{ TableName }}Vo {{ tableName }}Vo) {
         {{ tableName }}Service.update{{ TableName }}({{ tableName }}Vo);
         return Result.success(true);
     }
 
-    @PostMapping("/status")
-    @ApiOperation("{{ table_remark }}启用/禁用/删除")
-    public Result<Boolean> status(@RequestBody BatchEntityVo batchEntityVo) {
+    @DeleteMapping("/{id}")
+    @ApiOperation("删除{{ table_remark }}")
+    public Result<Boolean> delete{{ TableName }}(@PathVariable("id") Long id) {
         {{ tableName }}Service.updateStatus(batchEntityVo);
         return Result.success(true);
     }
 
-    @PostMapping("/page")
-    @ApiOperation("{{ table_remark }}分页列表")
-    public Result<Page<{{ TableName }}Dto>> selectPage(@RequestBody {{ TableName }}QueryVo {{ tableName }}QueryVo) {
-        Page<{{ TableName }}Dto> {{ tableName }}DtoPage = {{ tableName }}Service.selectPage({{ tableName }}QueryVo);
-        return Result.success({{ tableName }}DtoPage);
+    @GetMapping("/{id}")
+    public Result<{{ TableName }}> get{{ TableName }}(@PathVariable("id") Long id) {
+        return success(TbMovieConvert.INSTANCE.convert(tbMovieService.getTbMovie(id)));
     }
 
-    @PostMapping("/list")
-    @ApiOperation("{{ table_remark }}列表")
-    public Result<List<{{ TableName }}Dto>> selectList(@RequestBody {{ TableName }}QueryVo {{ tableName }}QueryVo) {
-        List<{{ TableName }}Dto> {{ tableName }}DtoList = {{ tableName }}Service.selectList({{ tableName }}QueryVo);
-        return Result.success({{ tableName }}DtoList);
+    @PostMapping("/page")
+    @ApiOperation("{{ table_remark }}分页列表")
+    public Result<Page<{{ TableName }}Dto>> page{{ TableName }}(@RequestBody {{ TableName }}QueryVo {{ tableName }}QueryVo) {
+        Page<{{ TableName }}Dto> {{ tableName }}DtoPage = {{ tableName }}Service.selectPage({{ tableName }}QueryVo);
+        return Result.success({{ tableName }}DtoPage);
     }
 
 }

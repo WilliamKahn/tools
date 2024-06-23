@@ -3,7 +3,6 @@ package {{ packages['Service'] }};
 import java.util.List;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import ltd.mlj.cmss.common.vo.BatchEntityVo;
 import {{ packages['Dto'] }}.{{ TableName }}Dto;
 import {{ packages['QueryVo'] }}.{{ TableName }}QueryVo;
 import {{ packages['Vo'] }}.{{ TableName }}Vo;
@@ -36,28 +35,23 @@ public interface {{ TableName }}Service extends IService<{{ TableName }}> {
     /**
 	 * 删除{{ table_remark }}
 	 *
-	 * @param {{ tableName }}Vo
+	 * @param id id
 	 */
-    void delete{{ TableName }}({{ TableName }}Vo {{ tableName }}Vo);
+    void delete{{ TableName }}(Long id);
 
-    /**
-	 * {{ table_remark }}启用/禁用/删除
-	 *
-	 * @param batchEntityVo
-	 */
-	void updateStatus(BatchEntityVo batchEntityVo);
-
-    /**
-	 * {{ table_remark }}列表
-	 *
-	 * @param {{ TableName }}QueryVo
-	 */
-    List<{{ TableName }}Dto> selectList({{ TableName }}QueryVo {{ TableName }}QueryVo);
+	/**
+     * 查询{{ table_remark }}
+     *
+     * @param id id
+     * @return po
+     */
+    ${entity}DTO get{{ TableName }}(Long id);
 
     /**
 	 * {{ table_remark }}列表分页
 	 *
 	 * @param {{ TableName }}QueryVo
+	 * @return page
 	 */
     Page<{{ TableName }}Dto> selectPage({{ TableName }}QueryVo {{ TableName }}QueryVo);
 
