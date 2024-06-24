@@ -2,18 +2,12 @@ package {{ packages['Controller'] }};
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiOperation;
-import java.util.List;
-import javax.annotation.Resource;
-import javax.validation.Valid;
 import {{ packages['Dto']}}.{{ TableName }}Dto;
 import {{ packages['Service']}}.{{ TableName }}Service;
 import {{ packages['QueryVo']}}.{{ TableName }}QueryVo;
-import {{ packages['Vo']}}.{{ TableName }}Vo;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import {{ packages['CreateVo']}}.{{ TableName }}CreateVo;
+import {{ packages['UpdateVo']}}.{{ TableName }}UpdateVo;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author wanglk
@@ -27,28 +21,29 @@ public class {{ TableName }}Controller {
 
     @PostMapping()
     @ApiOperation("新增{{ table_remark }}")
-    public Result<Boolean> add{{ TableName }}(@RequestBody {{ TableName }}Vo {{ tableName }}Vo) {
-        {{ tableName }}Service.add{{ TableName }}({{ tableName }}Vo);
+    public Result<Boolean> create{{ TableName }}(@RequestBody {{ TableName }}CreateVo {{ tableName }}CreateVo) {
+        {{ tableName }}Service.create{{ TableName }}({{ tableName }}CreateVo);
         return Result.success(true);
     }
 
     @PutMapping()
     @ApiOperation("修改{{ table_remark }}")
-    public Result<Boolean> update{{ TableName }}(@RequestBody {{ TableName }}Vo {{ tableName }}Vo) {
-        {{ tableName }}Service.update{{ TableName }}({{ tableName }}Vo);
+    public Result<Boolean> update{{ TableName }}(@RequestBody {{ TableName }}UpdateVo {{ tableName }}UpdateVo) {
+        {{ tableName }}Service.update{{ TableName }}({{ tableName }}UpdateVo);
         return Result.success(true);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping()
     @ApiOperation("删除{{ table_remark }}")
-    public Result<Boolean> delete{{ TableName }}(@PathVariable("id") Long id) {
-        {{ tableName }}Service.updateStatus(batchEntityVo);
+    public Result<Boolean> delete{{ TableName }}(@RequestParam Long id) {
+        {{ tableName }}Service.delete{{ TableName }}(id);
         return Result.success(true);
     }
 
-    @GetMapping("/{id}")
-    public Result<{{ TableName }}> get{{ TableName }}(@PathVariable("id") Long id) {
-        return success(TbMovieConvert.INSTANCE.convert(tbMovieService.getTbMovie(id)));
+    @GetMapping()
+    @ApiOperation("{{ table_remark }}详情")
+    public Result<{{ TableName }}> get{{ TableName }}(@RequestParam Long id) {
+        return Result.success({{ tableName }}Service.get{{ TableName }}(id));
     }
 
     @PostMapping("/page")

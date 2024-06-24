@@ -9,7 +9,10 @@ from jinja2 import Template
 with open('./config.yml', 'r', encoding='utf-8') as f:
     config = yaml.load(f.read(), Loader=yaml.FullLoader)
 # 需要模板生成的引擎
-template = config['template']
+template_files = config['template']
+packages = {}
+for key, value in template_files.items():
+    packages[key] = value['package']
 # 字段映射
 field_mapping = config['field-mapping']
 # 项目路径
@@ -49,13 +52,13 @@ for row in columns:
 # 关闭数据库连接
 conn.close()
 
-for key, value in template.items():
+for key, value in template_files.items():
     # 模块
     module = value['module']
     # 包名
     package = value['package']
     # 读取模板文件
-    with open(f'template/{key}.template', 'r', encoding='utf-8') as f:
+    with open(f'template/{key}.j2', 'r', encoding='utf-8') as f:
         template = Template(f.read())
 
     # 渲染模板文件并生成Java类文件
@@ -66,11 +69,12 @@ for key, value in template.items():
         TableName=TableName,
         tableName=tableName,
         columns=parameters,
-        packages=template
+        packages=packages
     )
     if key == 'Model':
         key = ''
-    path = f'{project_path}/{module.replace(".", "/")}/src/main/java/{package.replace(".", "/")}'
+    module_path = f'/{module.replace(".", "/")}' if module else ''
+    path = f'{project_path}{module_path}/src/main/java/{package.replace(".", "/")}'
     # 路径不存在先生成
     if not os.path.exists(path):
         os.makedirs(path)

@@ -5,7 +5,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import {{ packages['Dto'] }}.{{ TableName }}Dto;
 import {{ packages['QueryVo'] }}.{{ TableName }}QueryVo;
-import {{ packages['Vo'] }}.{{ TableName }}Vo;
+import {{ packages['CreateVo'] }}.{{ TableName }}CreateVo;
+import {{ packages['UpdateVo'] }}.{{ TableName }}UpdateVo;
 import {{ packages['Model'] }}.{{ TableName }};
 
 
@@ -21,16 +22,16 @@ public interface {{ TableName }}Service extends IService<{{ TableName }}> {
     /**
 	 * 新增{{ table_remark }}
 	 *
-	 * @param {{ tableName }}Vo
+	 * @param {{ tableName }}CreateVo
 	 */
-    void add{{ TableName }}({{ TableName }}Vo {{ tableName }}Vo);
+    void create{{ TableName }}({{ TableName }}CreateVo {{ tableName }}CreateVo);
 
     /**
 	 * 修改{{ table_remark }}
 	 *
-	 * @param {{ tableName }}Vo
+	 * @param {{ tableName }}UpdateVo
 	 */
-    void update{{ TableName }}({{ TableName }}Vo {{ tableName }}Vo);
+    void update{{ TableName }}({{ TableName }}UpdateVo {{ tableName }}UpdateVo);
 
     /**
 	 * 删除{{ table_remark }}
@@ -40,12 +41,12 @@ public interface {{ TableName }}Service extends IService<{{ TableName }}> {
     void delete{{ TableName }}(Long id);
 
 	/**
-     * 查询{{ table_remark }}
+     * {{ table_remark }}详情
      *
      * @param id id
      * @return po
      */
-    ${entity}DTO get{{ TableName }}(Long id);
+    {{ TableName }}Dto get{{ TableName }}(Long id);
 
     /**
 	 * {{ table_remark }}列表分页

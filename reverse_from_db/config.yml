@@ -1,10 +1,10 @@
 mysql-config:
-  host: 192.168.99.14
+  host: localhost
   user: root
-  password: test@T123
-  database: test
+  password: '123456'
+  database: heima-movie
 
-table-name: sale_sales_type
+table-name: tb_movie
 table-remark: 销售类型
 
 field-mapping:
@@ -13,30 +13,37 @@ field-mapping:
   varchar: String
   datetime: LocalDateTime
 
-project-path: C:\Users\admin\IdeaProjects\movie-parent
+project-path: C:\Users\admin\IdeaProjects\crud-quickstart
 
+# null或者~为空值
 template:
   Model:
-    module: api
-    package: ltd.mlj.cmss.service.b.sales.model
+    module: null
+    package: cn.wnhyang.generator.entity
   Mapper:
-    module: mapper
-    package: ltd.mlj.cmss.service.b.sales.mapper
+    module: null
+    package: cn.wnhyang.generator.mapper
   Service:
-    module: Service
-    package: ltd.mlj.cmss.service.b.sales.service
+    module: null
+    package: cn.wnhyang.generator.service
   ServiceImpl:
-    module: Service
-    package: ltd.mlj.cmss.service.b.sales.service.impl
+    module: null
+    package: cn.wnhyang.generator.service.impl
   Controller:
-    module: controller
-    package: ltd.mlj.cmss.service.b.sales.controller
+    module: null
+    package: cn.wnhyang.generator.controller
   Dto:
-    module: dto
-    package: ltd.mlj.cmss.service.b.sales.dto
+    module: null
+    package: cn.wnhyang.generator.dto
   QueryVo:
-    module: vo
-    package: ltd.mlj.cmss.service.b.sales.vo
+    module: null
+    package: cn.wnhyang.generator.vo
   Vo:
-    module: vo
-    package: ltd.mlj.cmss.service.b.sales.vo
+    module: null
+    package: cn.wnhyang.generator.vo
+  CreateVo:
+    module: null
+    package: cn.wnhyang.generator.vo.create
+  UpdateVo:
+    module: null
+    package: cn.wnhyang.generator.vo.update
