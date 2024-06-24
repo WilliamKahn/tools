@@ -1,0 +1,26 @@
+package {{ packages['CreateVo'] }};
+
+import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+
+/**
+ * @author wanglk
+ */
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+@ApiModel(value = "创建{{ TableName }}对象", description = "{{ table_remark }}")
+@TableName(value = "{{ table_name }}")
+public class {{ TableName }}CreateVo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+{% for column in columns %}{% if column[0] != 'id' %}
+    @ApiModelProperty(value = "{{ column[3] }}")
+    private {{ column[2] }} {{ column[0] }};{% endif %}
+{% endfor %}
+}
