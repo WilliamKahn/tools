@@ -14,6 +14,8 @@ field-mapping:
   datetime: LocalDateTime
 
 project-path: C:\Users\admin\IdeaProjects\crud-quickstart
+# resultful风格
+resultful: CommonResult
 
 # null或者~为空值
 template:

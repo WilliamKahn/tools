@@ -17,6 +17,7 @@ for key, value in template_files.items():
 field_mapping = config['field-mapping']
 # 项目路径
 project_path = config['project-path']
+resultful = config['resultful']
 table_name = config['table-name']
 table_remark = config['table-remark']
 # 连接数据库
@@ -69,7 +70,8 @@ for key, value in template_files.items():
         TableName=TableName,
         tableName=tableName,
         columns=parameters,
-        packages=packages
+        packages=packages,
+        resultful=resultful
     )
     if key == 'Model':
         key = ''

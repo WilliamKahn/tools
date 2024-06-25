@@ -1,7 +1,8 @@
 package {{ packages['Mapper'] }};
 
-import ltd.mlj.cmss.service.b.sales.model.{{ TableName }};
+import {{ packages['Model'] }}.{{ TableName }};
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * <p>
@@ -10,6 +11,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  *
  * @author wanglk
  */
+@Mapper
 public interface {{ TableName }}Mapper extends BaseMapper<{{ TableName }}> {
 
 }

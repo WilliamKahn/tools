@@ -1,12 +1,13 @@
 package {{ packages['Controller'] }};
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.swagger.annotations.ApiOperation;
 import {{ packages['Dto']}}.{{ TableName }}Dto;
 import {{ packages['Service']}}.{{ TableName }}Service;
 import {{ packages['QueryVo']}}.{{ TableName }}QueryVo;
 import {{ packages['CreateVo']}}.{{ TableName }}CreateVo;
 import {{ packages['UpdateVo']}}.{{ TableName }}UpdateVo;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.ApiOperation;
+import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -21,36 +22,37 @@ public class {{ TableName }}Controller {
 
     @PostMapping()
     @ApiOperation("新增{{ table_remark }}")
-    public Result<Boolean> create{{ TableName }}(@RequestBody {{ TableName }}CreateVo {{ tableName }}CreateVo) {
+    public {{ resultful }}<Boolean> create{{ TableName }}(@RequestBody {{ TableName }}CreateVo {{ tableName }}CreateVo) {
         {{ tableName }}Service.create{{ TableName }}({{ tableName }}CreateVo);
-        return Result.success(true);
+        return null;
     }
 
     @PutMapping()
     @ApiOperation("修改{{ table_remark }}")
-    public Result<Boolean> update{{ TableName }}(@RequestBody {{ TableName }}UpdateVo {{ tableName }}UpdateVo) {
+    public {{ resultful }}<Boolean> update{{ TableName }}(@RequestBody {{ TableName }}UpdateVo {{ tableName }}UpdateVo) {
         {{ tableName }}Service.update{{ TableName }}({{ tableName }}UpdateVo);
-        return Result.success(true);
+        return null;
     }
 
     @DeleteMapping()
     @ApiOperation("删除{{ table_remark }}")
-    public Result<Boolean> delete{{ TableName }}(@RequestParam Long id) {
+    public {{ resultful }}<Boolean> delete{{ TableName }}(@RequestParam Long id) {
         {{ tableName }}Service.delete{{ TableName }}(id);
-        return Result.success(true);
+        return null;
     }
 
     @GetMapping()
     @ApiOperation("{{ table_remark }}详情")
-    public Result<{{ TableName }}> get{{ TableName }}(@RequestParam Long id) {
-        return Result.success({{ tableName }}Service.get{{ TableName }}(id));
+    public {{ resultful }}<{{ TableName }}Dto> get{{ TableName }}(@RequestParam Long id) {
+        {{ TableName }}Dto {{ tableName }}DtoPage = {{ tableName }}Service.get{{ TableName }}(id);
+        return null;
     }
 
     @PostMapping("/page")
     @ApiOperation("{{ table_remark }}分页列表")
-    public Result<Page<{{ TableName }}Dto>> page{{ TableName }}(@RequestBody {{ TableName }}QueryVo {{ tableName }}QueryVo) {
+    public {{ resultful }}<Page<{{ TableName }}Dto>> page{{ TableName }}(@RequestBody {{ TableName }}QueryVo {{ tableName }}QueryVo) {
         Page<{{ TableName }}Dto> {{ tableName }}DtoPage = {{ tableName }}Service.selectPage({{ tableName }}QueryVo);
-        return Result.success({{ tableName }}DtoPage);
+        return null;
     }
 
 }
