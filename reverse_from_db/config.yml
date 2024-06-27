@@ -1,19 +1,21 @@
 mysql-config:
-  host: localhost
-  user: root
-  password: '123456'
-  database: heima-movie
+  host: rm-bp1rqtxdy56343x3zmo.mysql.rds.aliyuncs.com
+  user: development_test
+  password: 2Cxmf3FK8B5bPmGbxGdr
+  database: lanxi_core
 
-table-name: tb_movie
-table-remark: 销售类型
+table-name: prescription
+table-remark: 处方
 
 field-mapping:
   bigint: Long
   int: Integer
   varchar: String
   datetime: LocalDateTime
+  text: String
+  decimal: Double
 
-project-path: C:\Users\admin\IdeaProjects\crud-quickstart
+project-path: C:/Users/admin/IdeaProjects/crud-quickstart
 # resultful风格
 resultful: CommonResult
 

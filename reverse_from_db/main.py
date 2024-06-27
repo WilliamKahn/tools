@@ -44,7 +44,7 @@ for row in columns:
     parameter = [
         snake_to_camel(row[0]),
         row[0].title().replace('_', ''),
-        field_mapping[re.sub(r'\([0-9]*\)', '', row[1])],
+        field_mapping[re.sub(r'\(\d+(,\d+)?\)', '', row[1])],
         row[8],
         row[0]
     ]
