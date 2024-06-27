@@ -1,6 +1,6 @@
 package {{ packages['Controller'] }};
 
-import {{ packages['Dto']}}.{{ TableName }}Dto;
+import {{ packages['Vo']}}.{{ TableName }}Vo;
 import {{ packages['Service']}}.{{ TableName }}Service;
 import {{ packages['QueryVo']}}.{{ TableName }}QueryVo;
 import {{ packages['CreateVo']}}.{{ TableName }}CreateVo;
@@ -43,15 +43,15 @@ public class {{ TableName }}Controller {
 
     @GetMapping()
     @ApiOperation("{{ table_remark }}详情")
-    public {{ resultful }}<{{ TableName }}Dto> get{{ TableName }}(@RequestParam Long id) {
-        {{ TableName }}Dto {{ tableName }}DtoPage = {{ tableName }}Service.get{{ TableName }}(id);
+    public {{ resultful }}<{{ TableName }}Vo> get{{ TableName }}(@RequestParam Long id) {
+        {{ TableName }}Vo {{ tableName }}Vo = {{ tableName }}Service.get{{ TableName }}(id);
         return null;
     }
 
     @PostMapping("/page")
     @ApiOperation("{{ table_remark }}分页列表")
-    public {{ resultful }}<Page<{{ TableName }}Dto>> page{{ TableName }}(@RequestBody {{ TableName }}QueryVo {{ tableName }}QueryVo) {
-        Page<{{ TableName }}Dto> {{ tableName }}DtoPage = {{ tableName }}Service.selectPage({{ tableName }}QueryVo);
+    public {{ resultful }}<Page<{{ TableName }}Vo>> page{{ TableName }}(@RequestBody {{ TableName }}QueryVo {{ tableName }}QueryVo) {
+        Page<{{ TableName }}Vo> {{ tableName }}Page = {{ tableName }}Service.page{{ TableName }}({{ tableName }}QueryVo);
         return null;
     }
 

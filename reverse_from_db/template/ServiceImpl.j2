@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import {{ packages['Dto'] }}.{{ TableName }}Dto;
+import {{ packages['Vo'] }}.{{ TableName }}Vo;
 import {{ packages['Mapper'] }}.{{ TableName }}Mapper;
 import {{ packages['Model'] }}.{{ TableName }};
 import {{ packages['Service'] }}.{{ TableName }}Service;
@@ -39,15 +39,15 @@ public class {{ TableName }}ServiceImpl extends ServiceImpl<{{ TableName }}Mappe
     }
 
     @Override
-    public {{ TableName }}Dto get{{ TableName }}(Long id) {
+    public {{ TableName }}Vo get{{ TableName }}(Long id) {
         {{ TableName }} {{ tableName }} = this.getById(id);
-        {{ TableName }}Dto result = new {{ TableName }}Dto();
+        {{ TableName }}Vo result = new {{ TableName }}Vo();
         BeanUtils.copyProperties({{ tableName }}, result);
         return result;
     }
 
     @Override
-    public Page<{{ TableName }}Dto> selectPage({{ TableName }}QueryVo {{ tableName }}QueryVo) {
+    public Page<{{ TableName }}Vo> page{{ TableName }}({{ TableName }}QueryVo {{ tableName }}QueryVo) {
         return null;
     }
 }

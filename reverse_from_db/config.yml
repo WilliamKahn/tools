@@ -15,7 +15,7 @@ field-mapping:
   text: String
   decimal: Double
 
-project-path: C:/Users/admin/IdeaProjects/crud-quickstart
+project-path: C:/Users/28599/IdeaProjects/crud-quickstart
 # resultful风格
 resultful: CommonResult
 
