@@ -51,7 +51,7 @@ public class {{ TableName }}Controller {
     }
 
     @PostMapping("/page")
-    @ApiOperation("{{ remark }}分页列表")
+    @ApiOperation("{{ remark }}分页")
     public {{ resultful }}<IPage<{{ TableName }}Vo>> page{{ TableName }}(@RequestBody {{ TableName }}QueryVo {{ tableName }}QueryVo) {
         IPage<{{ TableName }}Vo> {{ tableName }}Page = {{ tableName }}Service.page{{ TableName }}({{ tableName }}QueryVo);
         return null;
