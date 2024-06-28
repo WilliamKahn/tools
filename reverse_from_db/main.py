@@ -36,6 +36,8 @@ def snake_to_camel(snake_str):
 cursor = conn.cursor()
 cursor.execute(f"SHOW FULL COLUMNS FROM {table_name}")
 columns = cursor.fetchall()
+# 关闭数据库连接
+conn.close()
 TableName = table_name.title().replace('_', '')
 tableName = snake_to_camel(table_name)
 
@@ -49,9 +51,6 @@ for row in columns:
         row[0]
     ]
     parameters.append(parameter)
-
-# 关闭数据库连接
-conn.close()
 
 for key, value in template_files.items():
     # 模块
