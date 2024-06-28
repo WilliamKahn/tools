@@ -1,16 +1,18 @@
 package {{ packages['ServiceImpl'] }};
 
+import {{ packages['Model'] }}.{{ TableName }};
+import {{ packages['Mapper'] }}.{{ TableName }}Mapper;
+import {{ packages['Service'] }}.{{ TableName }}Service;
+import {{ packages['QueryVo'] }}.{{ TableName }}QueryVo;
+import {{ packages['Vo'] }}.{{ TableName }}Vo;
+import {{ packages['CreateVo'] }}.{{ TableName }}CreateVo;
+import {{ packages['UpdateVo'] }}.{{ TableName }}UpdateVo;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import {{ packages['Vo'] }}.{{ TableName }}Vo;
-import {{ packages['Mapper'] }}.{{ TableName }}Mapper;
-import {{ packages['Model'] }}.{{ TableName }};
-import {{ packages['Service'] }}.{{ TableName }}Service;
-import {{ packages['QueryVo'] }}.{{ TableName }}QueryVo;
-import {{ packages['CreateVo'] }}.{{ TableName }}CreateVo;
-import {{ packages['UpdateVo'] }}.{{ TableName }}UpdateVo;
 
 /**
  *
@@ -47,7 +49,13 @@ public class {{ TableName }}ServiceImpl extends ServiceImpl<{{ TableName }}Mappe
     }
 
     @Override
-    public Page<{{ TableName }}Vo> page{{ TableName }}({{ TableName }}QueryVo {{ tableName }}QueryVo) {
-        return null;
+    public IPage<{{ TableName }}Vo> page{{ TableName }}({{ TableName }}QueryVo {{ tableName }}QueryVo) {
+        LambdaQueryWrapper<CustomInfo> wrapper = new LambdaQueryWrapper<>();
+        IPage<CustomInfo> page = this.page(new Page<>(1, 10), wrapper);
+        return page.convert(entity -> {
+            CustomInfoVo vo = new CustomInfoVo();
+            BeanUtils.copyProperties(entity, vo);
+            return vo;
+        });
     }
 }

@@ -5,7 +5,7 @@ import {{ packages['Service']}}.{{ TableName }}Service;
 import {{ packages['QueryVo']}}.{{ TableName }}QueryVo;
 import {{ packages['CreateVo']}}.{{ TableName }}CreateVo;
 import {{ packages['UpdateVo']}}.{{ TableName }}UpdateVo;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.ApiOperation;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * @author wanglk
  */
+@Api(tags = "{{ table_remark }}")
 @RestController
 @RequestMapping("{{ table_name|replace('_', '/') }}")
 public class {{ TableName }}Controller {
@@ -50,8 +51,8 @@ public class {{ TableName }}Controller {
 
     @PostMapping("/page")
     @ApiOperation("{{ table_remark }}分页列表")
-    public {{ resultful }}<Page<{{ TableName }}Vo>> page{{ TableName }}(@RequestBody {{ TableName }}QueryVo {{ tableName }}QueryVo) {
-        Page<{{ TableName }}Vo> {{ tableName }}Page = {{ tableName }}Service.page{{ TableName }}({{ tableName }}QueryVo);
+    public {{ resultful }}<IPage<{{ TableName }}Vo>> page{{ TableName }}(@RequestBody {{ TableName }}QueryVo {{ tableName }}QueryVo) {
+        IPage<{{ TableName }}Vo> {{ tableName }}Page = {{ tableName }}Service.page{{ TableName }}({{ tableName }}QueryVo);
         return null;
     }
 

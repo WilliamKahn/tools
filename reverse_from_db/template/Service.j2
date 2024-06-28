@@ -1,12 +1,12 @@
 package {{ packages['Service'] }};
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.IService;
+import {{ packages['Model'] }}.{{ TableName }};
 import {{ packages['Vo'] }}.{{ TableName }}Vo;
 import {{ packages['QueryVo'] }}.{{ TableName }}QueryVo;
 import {{ packages['CreateVo'] }}.{{ TableName }}CreateVo;
 import {{ packages['UpdateVo'] }}.{{ TableName }}UpdateVo;
-import {{ packages['Model'] }}.{{ TableName }};
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 
 /**
@@ -53,7 +53,7 @@ public interface {{ TableName }}Service extends IService<{{ TableName }}> {
 	 * @param {{ TableName }}QueryVo
 	 * @return page
 	 */
-    Page<{{ TableName }}Vo> page{{ TableName }}({{ TableName }}QueryVo {{ TableName }}QueryVo);
+    IPage<{{ TableName }}Vo> page{{ TableName }}({{ TableName }}QueryVo {{ TableName }}QueryVo);
 
 }
 
