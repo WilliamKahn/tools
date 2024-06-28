@@ -50,10 +50,10 @@ public class {{ TableName }}ServiceImpl extends ServiceImpl<{{ TableName }}Mappe
 
     @Override
     public IPage<{{ TableName }}Vo> page{{ TableName }}({{ TableName }}QueryVo {{ tableName }}QueryVo) {
-        LambdaQueryWrapper<CustomInfo> wrapper = new LambdaQueryWrapper<>();
-        IPage<CustomInfo> page = this.page(new Page<>(1, 10), wrapper);
+        LambdaQueryWrapper<{{ TableName }}> wrapper = new LambdaQueryWrapper<>();
+        IPage<{{ TableName }}> page = this.page(new Page<>(1, 10), wrapper);
         return page.convert(entity -> {
-            CustomInfoVo vo = new CustomInfoVo();
+            {{ TableName }}Vo vo = new {{ TableName }}Vo();
             BeanUtils.copyProperties(entity, vo);
             return vo;
         });

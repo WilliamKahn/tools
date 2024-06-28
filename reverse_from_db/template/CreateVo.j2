@@ -1,6 +1,5 @@
 package {{ packages['CreateVo'] }};
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -14,13 +13,12 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value = "创建{{ TableName }}对象", description = "{{ table_remark }}")
-@TableName(value = "{{ table_name }}")
+@ApiModel(value = "创建{{ TableName }}对象", description = "{{ remark }}")
 public class {{ TableName }}CreateVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
-{% for column in columns %}{% if column[0] != 'id' %}
-    @ApiModelProperty(value = "{{ column[3] }}")
-    private {{ column[2] }} {{ column[0] }};{% endif %}
+{% for column in columns %}{% if column['field'] != 'id' %}
+    @ApiModelProperty(value = "{{ column['remark'] }}")
+    private {{ column['type'] }} {{ column['field'] }};{% endif %}
 {% endfor %}
 }

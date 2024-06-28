@@ -19,7 +19,6 @@ field_mapping = config['field-mapping']
 project_path = config['project-path']
 resultful = config['resultful']
 table_name = config['table-name']
-table_remark = config['table-remark']
 # 连接数据库
 conn = pymysql.connect(
     **config['mysql-config']
@@ -36,6 +35,9 @@ def snake_to_camel(snake_str):
 cursor = conn.cursor()
 cursor.execute(f"SHOW FULL COLUMNS FROM {table_name}")
 columns = cursor.fetchall()
+cursor.execute(f"SELECT table_comment FROM information_schema.tables WHERE table_schema = '{config['mysql-config']['database']}' AND table_name = '{table_name}'")
+# 获取备注
+remark = cursor.fetchone()[0]
 # 关闭数据库连接
 conn.close()
 TableName = table_name.title().replace('_', '')
@@ -43,14 +45,15 @@ tableName = snake_to_camel(table_name)
 
 parameters = []
 for row in columns:
-    parameter = [
-        snake_to_camel(row[0]),
-        row[0].title().replace('_', ''),
-        field_mapping[re.sub(r'\(\d+(,\d+)?\)', '', row[1])],
-        row[8],
-        row[0]
-    ]
+    parameter = {
+        "field": snake_to_camel(row[0]),
+        "Field": row[0].title().replace('_', ''),
+        "type": field_mapping[re.sub(r'\(\d+(,\d+)?\)', '', row[1])],
+        "remark": row[8],
+        "raw": row[0]
+    }
     parameters.append(parameter)
+
 
 for key, value in template_files.items():
     # 模块
@@ -65,7 +68,7 @@ for key, value in template_files.items():
     entity_code = template.render(
         # 替换内容
         table_name=table_name,
-        table_remark=table_remark,
+        remark=remark,
         TableName=TableName,
         tableName=tableName,
         columns=parameters,

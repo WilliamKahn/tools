@@ -6,6 +6,7 @@ import {{ packages['QueryVo']}}.{{ TableName }}QueryVo;
 import {{ packages['CreateVo']}}.{{ TableName }}CreateVo;
 import {{ packages['UpdateVo']}}.{{ TableName }}UpdateVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * @author wanglk
  */
-@Api(tags = "{{ table_remark }}")
+@Api(tags = "{{ remark }}")
 @RestController
 @RequestMapping("{{ table_name|replace('_', '/') }}")
 public class {{ TableName }}Controller {
@@ -22,35 +23,35 @@ public class {{ TableName }}Controller {
     private {{ TableName }}Service {{ tableName }}Service;
 
     @PostMapping()
-    @ApiOperation("新增{{ table_remark }}")
+    @ApiOperation("新增{{ remark }}")
     public {{ resultful }}<Boolean> create{{ TableName }}(@RequestBody {{ TableName }}CreateVo {{ tableName }}CreateVo) {
         {{ tableName }}Service.create{{ TableName }}({{ tableName }}CreateVo);
         return null;
     }
 
     @PutMapping()
-    @ApiOperation("修改{{ table_remark }}")
+    @ApiOperation("修改{{ remark }}")
     public {{ resultful }}<Boolean> update{{ TableName }}(@RequestBody {{ TableName }}UpdateVo {{ tableName }}UpdateVo) {
         {{ tableName }}Service.update{{ TableName }}({{ tableName }}UpdateVo);
         return null;
     }
 
     @DeleteMapping()
-    @ApiOperation("删除{{ table_remark }}")
+    @ApiOperation("删除{{ remark }}")
     public {{ resultful }}<Boolean> delete{{ TableName }}(@RequestParam Long id) {
         {{ tableName }}Service.delete{{ TableName }}(id);
         return null;
     }
 
     @GetMapping()
-    @ApiOperation("{{ table_remark }}详情")
+    @ApiOperation("{{ remark }}详情")
     public {{ resultful }}<{{ TableName }}Vo> get{{ TableName }}(@RequestParam Long id) {
         {{ TableName }}Vo {{ tableName }}Vo = {{ tableName }}Service.get{{ TableName }}(id);
         return null;
     }
 
     @PostMapping("/page")
-    @ApiOperation("{{ table_remark }}分页列表")
+    @ApiOperation("{{ remark }}分页列表")
     public {{ resultful }}<IPage<{{ TableName }}Vo>> page{{ TableName }}(@RequestBody {{ TableName }}QueryVo {{ tableName }}QueryVo) {
         IPage<{{ TableName }}Vo> {{ tableName }}Page = {{ tableName }}Service.page{{ TableName }}({{ tableName }}QueryVo);
         return null;

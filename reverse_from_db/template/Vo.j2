@@ -1,6 +1,5 @@
 package {{ packages['Vo'] }};
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -14,12 +13,12 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value = "{{ TableName }}对象", description = "{{ table_remark }}")
+@ApiModel(value = "{{ TableName }}对象", description = "{{ remark }}")
 public class {{ TableName }}Vo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 {% for column in columns %}
-    @ApiModelProperty(value = "{{ column[3] }}")
-    private {{ column[2] }} {{ column[0] }};
+    @ApiModelProperty(value = "{{ column['remark'] }}")
+    private {{ column['type'] }} {{ column['field'] }};
 {% endfor %}
 }
