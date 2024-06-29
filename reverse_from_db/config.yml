@@ -1,11 +1,10 @@
 mysql-config:
-  host: rm-bp1rqtxdy56343x3zmo.mysql.rds.aliyuncs.com
-  user: development_test
-  password: 2Cxmf3FK8B5bPmGbxGdr
-  database: lanxi_core
+  host: localhost
+  user: root
+  password: '123456'
+  database: heima-movie
 
-table-name: prescription
-table-remark: 处方
+table-name: tb_user
 
 field-mapping:
   bigint: Long
@@ -16,7 +15,7 @@ field-mapping:
   decimal: Double
   tinyint: Integer
 
-project-path: C:/Users/28599/IdeaProjects/crud-quickstart
+project-path: C:/Users/admin/IdeaProjects/crud-quickstart
 # resultful风格
 resultful: CommonResult
 

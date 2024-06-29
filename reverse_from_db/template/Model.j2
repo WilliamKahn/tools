@@ -28,7 +28,9 @@ public class {{ TableName }} implements Serializable {
 
     private static final long serialVersionUID = 1L;
 {% for column in columns %}
-    @ApiModelProperty(value = "{{ column['remark'] }}"){% if column['field'] == 'id' %}
+    /**
+     * {{ column['remark'] }}
+     */{% if column['field'] == 'id' %}
     @TableId(value = "{{ column['raw'] }}", type = IdType.AUTO){% else %}
     @TableField("{{ column['raw'] }}"){% endif %}
     private {{ column['type'] }} {{ column['field'] }};

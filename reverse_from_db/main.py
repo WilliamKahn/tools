@@ -42,7 +42,7 @@ remark = cursor.fetchone()[0]
 conn.close()
 TableName = table_name.title().replace('_', '')
 tableName = snake_to_camel(table_name)
-
+id_type = "Integer"
 parameters = []
 for row in columns:
     parameter = {
@@ -52,6 +52,8 @@ for row in columns:
         "remark": row[8],
         "raw": row[0]
     }
+    if parameter['field'] == "id":
+        id_type = parameter['type']
     parameters.append(parameter)
 
 
@@ -73,7 +75,8 @@ for key, value in template_files.items():
         tableName=tableName,
         columns=parameters,
         packages=packages,
-        resultful=resultful
+        resultful=resultful,
+        id_type=id_type
     )
     if key == 'Model':
         key = ''

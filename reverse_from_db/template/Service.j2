@@ -37,7 +37,7 @@ public interface {{ TableName }}Service extends IService<{{ TableName }}> {
 	 *
 	 * @param id id
 	 */
-    void delete{{ TableName }}(Long id);
+    void delete{{ TableName }}({{ id_type }} id);
 
 	/**
      * {{ table_remark }}详情
@@ -45,7 +45,7 @@ public interface {{ TableName }}Service extends IService<{{ TableName }}> {
      * @param id id
      * @return po
      */
-    {{ TableName }}Vo get{{ TableName }}(Long id);
+    {{ TableName }}Vo get{{ TableName }}({{ id_type }} id);
 
     /**
 	 * {{ table_remark }}列表分页

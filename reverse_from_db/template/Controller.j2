@@ -38,14 +38,14 @@ public class {{ TableName }}Controller {
 
     @DeleteMapping()
     @ApiOperation("删除{{ remark }}")
-    public {{ resultful }}<Boolean> delete{{ TableName }}(@RequestParam Long id) {
+    public {{ resultful }}<Boolean> delete{{ TableName }}(@RequestParam {{ id_type }} id) {
         {{ tableName }}Service.delete{{ TableName }}(id);
         return null;
     }
 
     @GetMapping()
     @ApiOperation("{{ remark }}详情")
-    public {{ resultful }}<{{ TableName }}Vo> get{{ TableName }}(@RequestParam Long id) {
+    public {{ resultful }}<{{ TableName }}Vo> get{{ TableName }}(@RequestParam {{ id_type }} id) {
         {{ TableName }}Vo {{ tableName }}Vo = {{ tableName }}Service.get{{ TableName }}(id);
         return null;
     }
