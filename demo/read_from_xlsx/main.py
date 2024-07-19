@@ -11,4 +11,4 @@ df = pd.read_excel(
     engine='openpyxl')
 
 for index, row in df.iterrows():
-    print(row['编号'])
+    print(index, row['编号'])
