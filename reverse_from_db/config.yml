@@ -18,6 +18,8 @@ field-mapping:
 project-path: C:/Users/admin/IdeaProjects/crud-quickstart
 # resultful风格
 resultful: CommonResult
+# 主键名称
+primary-key: id
 
 # null或者~为空值
 template:
