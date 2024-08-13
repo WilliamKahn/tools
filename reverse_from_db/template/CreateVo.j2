@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
 public class {{ TableName }}CreateVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
-{% for column in columns %}{% if column['field'] != 'id' %}
+{% for column in columns %}{% if column['field'] != primary_key %}
     @ApiModelProperty(value = "{{ column['remark'] }}")
     private {{ column['type'] }} {{ column['field'] }};{% endif %}
 {% endfor %}

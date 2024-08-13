@@ -36,13 +36,13 @@ public class {{ TableName }}ServiceImpl extends ServiceImpl<{{ TableName }}Mappe
     }
 
     @Override
-    public void delete{{ TableName }}({{ id_type }} id) {
-        this.removeById(id);
+    public void delete{{ TableName }}({{ id_type }} {{ primary_key }}) {
+        this.removeById({{ primary_key }});
     }
 
     @Override
-    public {{ TableName }}Vo get{{ TableName }}({{ id_type }} id) {
-        {{ TableName }} {{ tableName }} = this.getById(id);
+    public {{ TableName }}Vo get{{ TableName }}({{ id_type }} {{ primary_key }}) {
+        {{ TableName }} {{ tableName }} = this.getById({{ primary_key }});
         {{ TableName }}Vo result = new {{ TableName }}Vo();
         BeanUtils.copyProperties({{ tableName }}, result);
         return result;

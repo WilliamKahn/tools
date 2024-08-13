@@ -30,7 +30,7 @@ public class {{ TableName }} implements Serializable {
 {% for column in columns %}
     /**
      * {{ column['remark'] }}
-     */{% if column['field'] == 'id' %}
+     */{% if column['field'] == primary_key %}
     @TableId(value = "{{ column['raw'] }}", type = IdType.AUTO){% else %}
     @TableField("{{ column['raw'] }}"){% endif %}
     private {{ column['type'] }} {{ column['field'] }};

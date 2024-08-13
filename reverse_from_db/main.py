@@ -19,6 +19,8 @@ field_mapping = config['field-mapping']
 project_path = config['project-path']
 resultful = config['resultful']
 table_name = config['table-name']
+# 主键名称 后续从表中获取
+primary_key = config['primary-key']
 # 连接数据库
 conn = pymysql.connect(
     **config['mysql-config']
@@ -76,7 +78,8 @@ for key, value in template_files.items():
         columns=parameters,
         packages=packages,
         resultful=resultful,
-        id_type=id_type
+        id_type=id_type,
+        primary_key=primary_key
     )
     if key == 'Model':
         key = ''

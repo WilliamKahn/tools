@@ -18,9 +18,8 @@ import {{ packages['CreateVo']}}.{{ TableName }}CreateVo;
 public class {{ TableName }}UpdateVo extends {{ TableName }}CreateVo{
 
     private static final long serialVersionUID = 1L;
-
-    {% for column in columns %}{% if column['field'] == 'id' %}
-    @ApiModelProperty(value = "{{ column['remark'] }}")
-    private {{ column['type'] }} {{ column['field'] }};{% endif %}
-    {% endfor %}
+    
+    @ApiModelProperty(value = "主键")
+    private {{ id_type }} {{ primary_key }};
+    
 }
