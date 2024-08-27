@@ -50,9 +50,9 @@ public class {{ TableName }}Controller {
         return null;
     }
 
-    @PostMapping("/page")
+    @GetMapping("/page")
     @ApiOperation("{{ remark }}分页")
-    public {{ resultful }}<IPage<{{ TableName }}Vo>> page{{ TableName }}(@RequestBody {{ TableName }}QueryVo {{ tableName }}QueryVo) {
+    public {{ resultful }}<IPage<{{ TableName }}Vo>> page{{ TableName }}(@RequestParam {{ TableName }}QueryVo {{ tableName }}QueryVo) {
         IPage<{{ TableName }}Vo> {{ tableName }}Page = {{ tableName }}Service.page{{ TableName }}({{ tableName }}QueryVo);
         return null;
     }
