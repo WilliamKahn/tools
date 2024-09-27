@@ -2,9 +2,9 @@ mysql-config:
   host: localhost
   user: root
   password: '123456'
-  database: heima-movie
+  database: db
 
-table-name: tb_user
+table-name: table
 
 field-mapping:
   bigint: Long
@@ -15,7 +15,7 @@ field-mapping:
   decimal: Double
   tinyint: Integer
 
-project-path: C:/Users/admin/IdeaProjects/crud-quickstart
+project-path: C:/Users/XXX/IdeaProjects/project
 # resultful风格
 resultful: CommonResult
 # 主键名称
@@ -25,28 +25,28 @@ primary-key: id
 template:
   Model:
     module: null
-    package: cn.wnhyang.generator.entity
+    package: com.test.entity
   Mapper:
     module: null
-    package: cn.wnhyang.generator.mapper
+    package: com.test.mapper
   Service:
     module: null
-    package: cn.wnhyang.generator.service
+    package: com.test.service
   ServiceImpl:
     module: null
-    package: cn.wnhyang.generator.service.impl
+    package: com.test.service.impl
   Controller:
     module: null
-    package: cn.wnhyang.generator.controller
+    package: com.test.controller
   QueryVo:
     module: null
-    package: cn.wnhyang.generator.vo
+    package: com.test.vo
   Vo:
     module: null
-    package: cn.wnhyang.generator.vo
+    package: com.test.vo
   CreateVo:
     module: null
-    package: cn.wnhyang.generator.vo.create
+    package: com.test.vo.create
   UpdateVo:
     module: null
-    package: cn.wnhyang.generator.vo.update
+    package: com.test.vo.update
