@@ -30,6 +30,10 @@ template:
   Mapper:
     module: null
     package: com.test.mapper
+    path: /test
+  DAO:
+    module: null
+    package: com.test.dao
   Service:
     module: null
     package: com.test.service
@@ -43,6 +47,9 @@ template:
     module: null
     package: com.test.vo
   Vo:
+    module: null
+    package: com.test.vo
+  ListVo:
     module: null
     package: com.test.vo
   CreateVo:
