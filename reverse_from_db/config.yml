@@ -5,6 +5,7 @@ mysql-config:
   database: db
 
 table-name: table
+author-name: williamkahn
 
 field-mapping:
   bigint: Long
@@ -17,7 +18,7 @@ field-mapping:
 
 project-path: C:/Users/XXX/IdeaProjects/project
 # resultful风格
-resultful: CommonResult
+resultful: ResponseResult
 # 主键名称
 primary-key: id
 

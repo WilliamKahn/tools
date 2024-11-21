@@ -1,20 +1,21 @@
-package {{ packages['QueryVo'] }};
+package {{ packages['Vo'] }};
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
+import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**
- * @author wanglk
+ * @author {{ author }}
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @ApiModel(value = "{{ TableName }}对象", description = "{{ remark }}")
-public class {{ TableName }}QueryVo extends PageParam implements Serializable {
+public class {{ TableName }}Vo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 {% for column in columns %}

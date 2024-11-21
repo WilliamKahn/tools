@@ -57,6 +57,7 @@ def main():
     resultful = config['resultful']
     table_name = config['table-name']
     primary_key = config['primary-key']
+    author_name = config['author-name']
 
     with connect_to_db(config) as conn:
         cursor = conn.cursor()
@@ -70,7 +71,7 @@ def main():
         module = value['module']
         package = value['package']
         context = {
-            "table_name": table_name,
+            "table_name": table_name.strip(),
             "remark": remark,
             "TableName": TableName,
             "tableName": tableName,
@@ -78,15 +79,22 @@ def main():
             "packages": packages,
             "resultful": resultful,
             "id_type": id_type,
-            "primary_key": primary_key
+            "primary_key": primary_key,
+            "author": author_name
         }
-        entity_code = render_template(f'template/{key}.j2', context)
+        entity_code = render_template(f'template/{key}.java.j2', context)
         if key == 'Model':
             key = ''
         module_path = f'/{module.replace(".", "/")}' if module else ''
         path = f'{project_path}{module_path}/src/main/java/{package.replace(".", "/")}/{TableName}{key}.java'
         create_file(path, entity_code)
         print(f'{TableName}{key}.java生成成功')
+        if key == 'Mapper':
+            xml = render_template(f'template/{key}.xml.j2', context)
+            xml_path = value['path']
+            path = f'{project_path}{module_path}/src/main/resources/mapper{xml_path}/{TableName}{key}.xml'
+            create_file(path, xml)
+            print(f'{TableName}{key}.xml生成成功')
 
 if __name__ == "__main__":
     main()

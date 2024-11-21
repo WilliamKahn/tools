@@ -1,25 +1,25 @@
 package {{ packages['Controller'] }};
 
 import {{ packages['Vo']}}.{{ TableName }}Vo;
+import {{ packages['ListVo'] }}.{{ TableName }}ListVo;
 import {{ packages['Service']}}.{{ TableName }}Service;
 import {{ packages['QueryVo']}}.{{ TableName }}QueryVo;
 import {{ packages['CreateVo']}}.{{ TableName }}CreateVo;
 import {{ packages['UpdateVo']}}.{{ TableName }}UpdateVo;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * @author wanglk
+ * @author {{ author }}
  */
 @Api(tags = "{{ remark }}")
 @RestController
 @RequestMapping("{{ table_name|replace('_', '/') }}")
 public class {{ TableName }}Controller {
 
-    @Autowired
+    @Resource
     private {{ TableName }}Service {{ tableName }}Service;
 
     @PostMapping()
@@ -38,8 +38,8 @@ public class {{ TableName }}Controller {
 
     @DeleteMapping()
     @ApiOperation("删除{{ remark }}")
-    public {{ resultful }}<Boolean> delete{{ TableName }}(@RequestParam {{ id_type }} id) {
-        {{ tableName }}Service.delete{{ TableName }}(id);
+    public {{ resultful }}<Boolean> delete{{ TableName }}(@RequestParam List<{{ id_type }}> ids) {
+        {{ tableName }}Service.delete{{ TableName }}(ids);
         return null;
     }
 
@@ -52,8 +52,8 @@ public class {{ TableName }}Controller {
 
     @GetMapping("/page")
     @ApiOperation("{{ remark }}分页")
-    public {{ resultful }}<IPage<{{ TableName }}Vo>> page{{ TableName }}(@RequestParam {{ TableName }}QueryVo {{ tableName }}QueryVo) {
-        IPage<{{ TableName }}Vo> {{ tableName }}Page = {{ tableName }}Service.page{{ TableName }}({{ tableName }}QueryVo);
+    public {{ resultful }}<PageInfo<{{ TableName }}ListVo>> page{{ TableName }}(@RequestParam {{ TableName }}QueryVo {{ tableName }}QueryVo) {
+        PageInfo<{{ TableName }}ListVo> {{ tableName }}Page = {{ tableName }}Service.page{{ TableName }}({{ tableName }}QueryVo);
         return null;
     }
 }

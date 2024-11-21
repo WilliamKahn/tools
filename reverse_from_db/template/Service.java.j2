@@ -1,22 +1,16 @@
 package {{ packages['Service'] }};
 
-import {{ packages['Model'] }}.{{ TableName }};
 import {{ packages['Vo'] }}.{{ TableName }}Vo;
+import {{ packages['ListVo'] }}.{{ TableName }}ListVo;
 import {{ packages['QueryVo'] }}.{{ TableName }}QueryVo;
 import {{ packages['CreateVo'] }}.{{ TableName }}CreateVo;
 import {{ packages['UpdateVo'] }}.{{ TableName }}UpdateVo;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.IService;
-
+import java.util.List;
 
 /**
- * <p>
- * {{ table_remark }}表  服务类
- * </p>
- *
- * @author wanglk
+ * @author {{ author }}
  */
-public interface {{ TableName }}Service extends IService<{{ TableName }}> {
+public interface {{ TableName }}Service {
 
     /**
 	 * 新增{{ table_remark }}
@@ -35,9 +29,9 @@ public interface {{ TableName }}Service extends IService<{{ TableName }}> {
     /**
 	 * 删除{{ table_remark }}
 	 *
-	 * @param id id
+	 * @param {{ primary_key }}s
 	 */
-    void delete{{ TableName }}({{ id_type }} {{ primary_key }});
+    void delete{{ TableName }}(List<{{ id_type }}> {{ primary_key }}s);
 
 	/**
      * {{ table_remark }}详情
@@ -53,7 +47,7 @@ public interface {{ TableName }}Service extends IService<{{ TableName }}> {
 	 * @param {{ TableName }}QueryVo
 	 * @return page
 	 */
-    IPage<{{ TableName }}Vo> page{{ TableName }}({{ TableName }}QueryVo {{ TableName }}QueryVo);
+    PageInfo<{{ TableName }}ListVo> page{{ TableName }}({{ TableName }}QueryVo {{ TableName }}QueryVo);
 
 }
 

@@ -2,16 +2,10 @@ package {{ packages['Mapper'] }};
 
 import {{ packages['Model'] }}.{{ TableName }};
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
 
 /**
- * <p>
- * {{ remark }}表  Mapper 接口
- * </p>
- *
- * @author wanglk
+ * @author {{ author }}
  */
-@Mapper
 public interface {{ TableName }}Mapper extends BaseMapper<{{ TableName }}> {
 
 }
