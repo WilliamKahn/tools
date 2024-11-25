@@ -1,17 +1,20 @@
 package {{ packages['ServiceImpl'] }};
 
-import {{ packages['Model'] }}.{{ TableName }};
+import {{ packages['DO'] }}.{{ TableName }}DO;
 import {{ packages['DAO'] }}.{{ TableName }}DAO;
 import {{ packages['Service'] }}.{{ TableName }}Service;
-import {{ packages['QueryVo'] }}.{{ TableName }}QueryVo;
-import {{ packages['Vo'] }}.{{ TableName }}Vo;
-import {{ packages['ListVo'] }}.{{ TableName }}ListVo;
-import {{ packages['CreateVo'] }}.{{ TableName }}CreateVo;
-import {{ packages['UpdateVo'] }}.{{ TableName }}UpdateVo;
+import {{ packages['QueryDTO'] }}.{{ TableName }}QueryDTO;
+import {{ packages['VO'] }}.{{ TableName }}VO;
+import {{ packages['ListVO'] }}.{{ TableName }}ListVO;
+import {{ packages['CreateVO'] }}.{{ TableName }}CreateVO;
+import {{ packages['UpdateVO'] }}.{{ TableName }}UpdateVO;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author {{ author }}
@@ -23,17 +26,17 @@ public class {{ TableName }}ServiceImpl implements {{ TableName }}Service {
     private {{ TableName }}DAO {{ tableName }}DAO;
 
     @Override
-    public void create{{ TableName }}({{ TableName }}CreateVo {{ tableName }}CreateVo) {
-        {{ TableName }} {{ tableName }} = new {{ TableName }}();
-        BeanUtils.copyProperties({{ tableName }}CreateVo, {{ tableName }});
-        {{ tableName }}DAO.save({{ tableName }});
+    public void create{{ TableName }}({{ TableName }}CreateVO {{ tableName }}CreateVO) {
+        {{ TableName }}DO {{ tableName }}DO = new {{ TableName }}DO();
+        BeanUtils.copyProperties({{ tableName }}CreateVO, {{ tableName }}DO);
+        {{ tableName }}DAO.save({{ tableName }}DO);
     }
 
     @Override
-    public void update{{ TableName }}({{ TableName }}UpdateVo {{ tableName }}UpdateVo) {
-        {{ TableName }} {{ tableName }} = new {{ TableName }}();
-        BeanUtils.copyProperties({{ tableName }}UpdateVo, {{ tableName }});
-        {{ tableName }}DAO.updateById({{ tableName }});
+    public void update{{ TableName }}({{ TableName }}UpdateVO {{ tableName }}UpdateVO) {
+        {{ TableName }}DO {{ tableName }}DO = new {{ TableName }}DO();
+        BeanUtils.copyProperties({{ tableName }}UpdateVO, {{ tableName }}DO);
+        {{ tableName }}DAO.updateById({{ tableName }}DO);
     }
 
     @Override
@@ -42,24 +45,24 @@ public class {{ TableName }}ServiceImpl implements {{ TableName }}Service {
     }
 
     @Override
-    public {{ TableName }}Vo get{{ TableName }}({{ id_type }} {{ primary_key }}) {
-        {{ TableName }} {{ tableName }} = {{ tableName }}DAO.getById({{ primary_key }});
-        {{ TableName }}Vo result = new {{ TableName }}Vo();
-        BeanUtils.copyProperties({{ tableName }}, result);
+    public {{ TableName }}VO get{{ TableName }}({{ id_type }} {{ primary_key }}) {
+        {{ TableName }}DO {{ tableName }}DO = {{ tableName }}DAO.getById({{ primary_key }});
+        {{ TableName }}VO result = new {{ TableName }}VO();
+        BeanUtils.copyProperties({{ tableName }}DO, result);
         return result;
     }
 
     @Override
-    public PageInfo<{{ TableName }}ListVo> page{{ TableName }}({{ TableName }}QueryVo {{ tableName }}QueryVo) {
-        PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
-        List<{{ TableName }}> list = {{ tableName }}DAO.list({{ tableName }}QueryVo);
+    public PageInfo<{{ TableName }}ListVO> page{{ TableName }}({{ TableName }}QueryDTO {{ tableName }}QueryDTO) {
+        PageHelper.startPage({{ tableName }}QueryDTO.getPageNum(), {{ tableName }}QueryDTO.getPageSize());
+        List<{{ TableName }}DO> list = {{ tableName }}DAO.list();
         PageInfo result = new PageInfo<>(list);
-        List<{{ TableName }}ListVo> listVo = list.stream().map(entity -> {
-            {{ TableName }}ListVo vo = new {{ TableName }}ListVo();
+        List<{{ TableName }}ListVO> ListVO = list.stream().map(entity -> {
+            {{ TableName }}ListVO vo = new {{ TableName }}ListVO();
             BeanUtils.copyProperties(entity, vo);
             return vo;
         }).collect(Collectors.toList());
-        result.setList(listVo);
+        result.setList(ListVO);
         return result;
     }
 }

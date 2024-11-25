@@ -1,11 +1,11 @@
 package {{ packages['Mapper'] }};
 
-import {{ packages['Model'] }}.{{ TableName }};
+import {{ packages['DO'] }}.{{ TableName }}DO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
  * @author {{ author }}
  */
-public interface {{ TableName }}Mapper extends BaseMapper<{{ TableName }}> {
+public interface {{ TableName }}Mapper extends BaseMapper<{{ TableName }}DO> {
 
 }

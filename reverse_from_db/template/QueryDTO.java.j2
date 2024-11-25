@@ -1,5 +1,6 @@
-package {{ packages['QueryVo'] }};
+package {{ packages['QueryDTO'] }};
 
+import {{ extra['pagination']['package'] }}.{{ extra['pagination']['class'] }};
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -15,7 +16,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @ApiModel(value = "{{ TableName }}对象", description = "{{ remark }}")
-public class {{ TableName }}QueryVo extends PageParam implements Serializable {
+public class {{ TableName }}QueryDTO extends {{ extra['pagination']['class'] }} implements Serializable {
 
     private static final long serialVersionUID = 1L;
 {% for column in columns %}

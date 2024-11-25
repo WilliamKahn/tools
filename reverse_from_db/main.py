@@ -8,8 +8,8 @@ def load_config(file_path):
     with open(file_path, 'r', encoding='utf-8') as f:
         return yaml.load(f.read(), Loader=yaml.FullLoader)
 
-def connect_to_db(config):
-    return pymysql.connect(**config['mysql-config'])
+def connect_to_db(database):
+    return pymysql.connect(**database)
 
 def snake_to_camel(snake_str):
     components = snake_str.lower().split('_')
@@ -26,6 +26,7 @@ def generate_parameters(columns, field_mapping):
     parameters = []
     id_type = "Integer"
     for row in columns:
+        # parameter = {"testTest", "TestTest", "String", "测试", "test_test"}
         parameter = {
             "field": snake_to_camel(row[0]),
             "Field": row[0].title().replace('_', ''),
@@ -49,50 +50,54 @@ def create_file(path, content):
         f.write(content)
 
 def main():
+    # 读取配置文件
     config = load_config('./config.yml')
+    # 获取映射关系
+    database = config['database']
+    table = config['table']
+    author = config['author']
+    field_mapping = config['field_mapping']
+    project = config['project']
+    extra = config['extra']
+    # 获取所有模板配置的包名
     template_files = config['template']
     packages = {key: value['package'] for key, value in template_files.items()}
-    field_mapping = config['field-mapping']
-    project_path = config['project-path']
-    resultful = config['resultful']
-    table_name = config['table-name']
-    primary_key = config['primary-key']
-    author_name = config['author-name']
 
-    with connect_to_db(config) as conn:
+    with connect_to_db(database) as conn:
         cursor = conn.cursor()
-        columns, remark = get_table_metadata(cursor, table_name, config['mysql-config']['database'])
-
-    TableName = table_name.title().replace('_', '')
-    tableName = snake_to_camel(table_name)
+        # 获取表中列信息和表备注
+        columns, remark = get_table_metadata(cursor, table['name'], database['database'])
+    # 获取生成列类型字段和主键类型
     parameters, id_type = generate_parameters(columns, field_mapping)
 
+    table_name = table['name'].strip()
+    TableName = table_name.title().replace('_', '')
     for key, value in template_files.items():
         module = value['module']
         package = value['package']
         context = {
-            "table_name": table_name.strip(),
-            "remark": remark,
+            "table_name": table_name,
             "TableName": TableName,
-            "tableName": tableName,
+            "tableName": snake_to_camel(table_name),
+            "remark": remark,
             "columns": parameters,
             "packages": packages,
-            "resultful": resultful,
             "id_type": id_type,
-            "primary_key": primary_key,
-            "author": author_name
+            "primary_key": table['primary_key'],
+            "author": author['name'],
+            "extra": extra,
         }
         entity_code = render_template(f'template/{key}.java.j2', context)
-        if key == 'Model':
-            key = ''
         module_path = f'/{module.replace(".", "/")}' if module else ''
-        path = f'{project_path}{module_path}/src/main/java/{package.replace(".", "/")}/{TableName}{key}.java'
+        path = f'{project["path"]}{module_path}/src/main/java/{package.replace(".", "/")}/{TableName}{key}.java'
+        # 生成模板文件
         create_file(path, entity_code)
         print(f'{TableName}{key}.java生成成功')
+        # mapper文件还需要在xml文件中生成
         if key == 'Mapper':
             xml = render_template(f'template/{key}.xml.j2', context)
             xml_path = value['path']
-            path = f'{project_path}{module_path}/src/main/resources/mapper{xml_path}/{TableName}{key}.xml'
+            path = f'{project["path"]}{module_path}/src/main/resources/mapper{xml_path}/{TableName}{key}.xml'
             create_file(path, xml)
             print(f'{TableName}{key}.xml生成成功')
 

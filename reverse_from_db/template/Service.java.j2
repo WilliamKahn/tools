@@ -1,10 +1,11 @@
 package {{ packages['Service'] }};
 
-import {{ packages['Vo'] }}.{{ TableName }}Vo;
-import {{ packages['ListVo'] }}.{{ TableName }}ListVo;
-import {{ packages['QueryVo'] }}.{{ TableName }}QueryVo;
-import {{ packages['CreateVo'] }}.{{ TableName }}CreateVo;
-import {{ packages['UpdateVo'] }}.{{ TableName }}UpdateVo;
+import {{ packages['VO'] }}.{{ TableName }}VO;
+import {{ packages['ListVO'] }}.{{ TableName }}ListVO;
+import {{ packages['QueryDTO'] }}.{{ TableName }}QueryDTO;
+import {{ packages['CreateVO'] }}.{{ TableName }}CreateVO;
+import {{ packages['UpdateVO'] }}.{{ TableName }}UpdateVO;
+import com.github.pagehelper.PageInfo;
 import java.util.List;
 
 /**
@@ -15,23 +16,23 @@ public interface {{ TableName }}Service {
     /**
 	 * 新增{{ table_remark }}
 	 *
-	 * @param {{ tableName }}CreateVo
+	 * @param {{ tableName }}CreateVO
 	 */
-    void create{{ TableName }}({{ TableName }}CreateVo {{ tableName }}CreateVo);
+    void create{{ TableName }}({{ TableName }}CreateVO {{ tableName }}CreateVO);
 
     /**
 	 * 修改{{ table_remark }}
 	 *
-	 * @param {{ tableName }}UpdateVo
+	 * @param {{ tableName }}UpdateVO
 	 */
-    void update{{ TableName }}({{ TableName }}UpdateVo {{ tableName }}UpdateVo);
+    void update{{ TableName }}({{ TableName }}UpdateVO {{ tableName }}UpdateVO);
 
     /**
 	 * 删除{{ table_remark }}
 	 *
-	 * @param {{ primary_key }}s
+	 * @param {{ primary_key }}List
 	 */
-    void delete{{ TableName }}(List<{{ id_type }}> {{ primary_key }}s);
+    void delete{{ TableName }}(List<{{ id_type }}> {{ primary_key }}List);
 
 	/**
      * {{ table_remark }}详情
@@ -39,15 +40,15 @@ public interface {{ TableName }}Service {
      * @param id id
      * @return po
      */
-    {{ TableName }}Vo get{{ TableName }}({{ id_type }} {{ primary_key }});
+    {{ TableName }}VO get{{ TableName }}({{ id_type }} {{ primary_key }});
 
     /**
 	 * {{ table_remark }}列表分页
 	 *
-	 * @param {{ TableName }}QueryVo
+	 * @param {{ TableName }}QueryDTO
 	 * @return page
 	 */
-    PageInfo<{{ TableName }}ListVo> page{{ TableName }}({{ TableName }}QueryVo {{ TableName }}QueryVo);
+    PageInfo<{{ TableName }}ListVO> page{{ TableName }}({{ TableName }}QueryDTO {{ TableName }}QueryDTO);
 
 }
 

@@ -1,6 +1,6 @@
 package {{ packages['DAO'] }};
 
-import {{ packages['Model'] }}.{{ TableName }};
+import {{ packages['DO'] }}.{{ TableName }}DO;
 import {{ packages['Mapper'] }}.{{ TableName }}Mapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -9,5 +9,5 @@ import org.springframework.stereotype.Service;
  * @author {{ author }}
  */
 @Service
-public class {{ TableName }}DAO extends ServiceImpl<{{ TableName }}Mapper, {{ TableName }}> {
+public class {{ TableName }}DAO extends ServiceImpl<{{ TableName }}Mapper, {{ TableName }}DO> {
 }

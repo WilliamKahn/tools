@@ -1,30 +1,47 @@
-mysql-config:
+# 数据库配置
+database:
   host: localhost
   user: root
   password: '123456'
-  database: db
+  database: mydb
 
-table-name: table
-author-name: williamkahn
+# 数据库表名
+table:
+  name: mytable
+  primary_key: id
 
-field-mapping:
+# 作者
+author:
+  name: author
+
+# 数据库字段类型映射 java类型
+field_mapping:
   bigint: Long
   int: Integer
   varchar: String
-  datetime: LocalDateTime
+  datetime: Date
   text: String
   decimal: Double
   tinyint: Integer
 
-project-path: C:/Users/XXX/IdeaProjects/project
-# resultful风格
-resultful: ResponseResult
-# 主键名称
-primary-key: id
+# 项目路径
+project:
+  path: /users/xxx/IdeaProjects/project
 
-# null或者~为空值
+# 模板额外类配置信息
+extra:
+  # resultful返回值
+  resultful:
+    package: com.test.response
+    class: Result
+  # 分页父类
+  pagination:
+    package: com.test.common
+    class: Page
+
+# 单模块module填null或者~为空值，多模块module填模块名
 template:
-  Model:
+  DO:
     module: null
     package: com.test.entity
   Mapper:
@@ -43,18 +60,18 @@ template:
   Controller:
     module: null
     package: com.test.controller
-  QueryVo:
+  QueryDTO:
+    module: null
+    package: com.test.dto
+  VO:
     module: null
     package: com.test.vo
-  Vo:
+  ListVO:
     module: null
     package: com.test.vo
-  ListVo:
+  CreateVO:
     module: null
     package: com.test.vo
-  CreateVo:
+  UpdateVO:
     module: null
-    package: com.test.vo.create
-  UpdateVo:
-    module: null
-    package: com.test.vo.update
+    package: com.test.vo

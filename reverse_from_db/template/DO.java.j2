@@ -1,4 +1,4 @@
-package {{ packages['Model'] }};
+package {{ packages['DO'] }};
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -18,9 +18,9 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value = "{{ TableName }}对象", description = "{{ remark }}表")
+@ApiModel(value = "{{ TableName }}DO对象", description = "{{ remark }}表")
 @TableName(value = "{{ table_name }}")
-public class {{ TableName }} implements Serializable {
+public class {{ TableName }}DO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 {% for column in columns %}

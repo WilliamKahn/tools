@@ -1,4 +1,4 @@
-package {{ packages['CreateVo'] }};
+package {{ packages['CreateVO'] }};
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -15,7 +15,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @ApiModel(value = "创建{{ TableName }}对象", description = "{{ remark }}")
-public class {{ TableName }}CreateVo implements Serializable {
+public class {{ TableName }}CreateVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 {% for column in columns %}{% if column['field'] != primary_key %}
