@@ -1,5 +1,5 @@
-from PyQt5.QtGui import QIcon, QPixmap, QPainter, QColor
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTextEdit, QTableWidget, QTableWidgetItem, QPushButton, QHBoxLayout, \
+from PyQt5.QtGui import QIcon, QPixmap, QPainter, QColor, QBrush
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, QPushButton, QHBoxLayout, \
     QApplication, QMenu, QAction, QMessageBox, QPlainTextEdit
 from PyQt5.QtCore import Qt
 import re
@@ -11,6 +11,10 @@ class Page1(QWidget):
         self.md_content = ""  # Initialize md_content
         self.initUI()
         self.column_colors = {}
+        self.attributes = (
+            {'name': "字段",'color': Qt.red},
+            {'name': "类型",'color': Qt.green},
+            {'name': "备注", 'color': Qt.gray})
 
     def initUI(self):
         layout = QHBoxLayout()
@@ -40,8 +44,8 @@ class Page1(QWidget):
     def updateTable(self):
         md_content = self.textEdit.toPlainText()
         rows = []
-
-        # Detect format and parse accordingly
+        # todo 格式校验
+        # 格式转换
         if '|' in md_content:
             # Markdown table format
             lines = md_content.split('\n')
@@ -67,21 +71,15 @@ class Page1(QWidget):
             for i, row in enumerate(rows[1:]):
                 for j, cell in enumerate(row):
                     self.tableWidget.setItem(i, j, QTableWidgetItem(cell.strip()))
+        # 列校验 采用特征叠加判断具体列
 
     def showContextMenu(self, pos):
         contextMenu = QMenu(self)
 
-        redIcon = self.createColorIcon(Qt.red)
-        redAction = QAction(redIcon, "字段", self)
-        contextMenu.addAction(redAction)
-
-        greenIcon = self.createColorIcon(Qt.green)
-        greenAction = QAction(greenIcon, "类型", self)
-        contextMenu.addAction(greenAction)
-
-        grayIcon = self.createColorIcon(Qt.gray)
-        grayAction = QAction(grayIcon, "备注", self)
-        contextMenu.addAction(grayAction)
+        for attribute in self.attributes:
+            Icon = self.createColorIcon(attribute['color'])
+            action = QAction(Icon, attribute['name'], self)
+            contextMenu.addAction(action)
 
         resetAction = QAction("Reset", self)
         contextMenu.addAction(resetAction)
@@ -89,16 +87,12 @@ class Page1(QWidget):
         action = contextMenu.exec_(self.tableWidget.mapToGlobal(pos))
         if action:
             col = self.tableWidget.horizontalHeader().logicalIndexAt(pos)
-            if action == redAction:
-                self.resetColumnColor(Qt.red)
-                self.setColumnColor(col, Qt.red)
-            elif action == greenAction:
-                self.resetColumnColor(Qt.green)
-                self.setColumnColor(col, Qt.green)
-            elif action == grayAction:
-                self.resetColumnColor(Qt.gray)
-                self.setColumnColor(col, Qt.gray)
-            elif action == resetAction:
+            for attribute in self.attributes:
+                if action.text() == attribute['name']:
+                    self.resetColumnColor(attribute['color'])
+                    self.setColumnColor(col, attribute['color'])
+                    break
+            if action == resetAction:
                 self.setColumnColor(col, None)
 
     def createColorIcon(self, color):
@@ -121,10 +115,10 @@ class Page1(QWidget):
         header = self.tableWidget.horizontalHeaderItem(col)
         if header:
             if color:
-                header.setBackground(color)
+                header.setForeground(QBrush(color))
                 self.column_colors[col] = color
             else:
-                header.setBackground(Qt.transparent)
+                header.setForeground(QBrush())
                 if col in self.column_colors:
                     del self.column_colors[col]
 
