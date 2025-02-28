@@ -1,13 +1,20 @@
+from PIL.ImageDraw2 import Brush
 from PyQt5.QtGui import QIcon, QPixmap, QPainter, QColor, QBrush
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, QPushButton, QHBoxLayout, \
-    QApplication, QMenu, QAction, QMessageBox, QPlainTextEdit
+from PyQt5.QtWidgets import QVBoxLayout, QTableWidgetItem, QHBoxLayout, \
+    QApplication, QMenu, QAction, QMessageBox, QFrame
 from PyQt5.QtCore import Qt
 import re
+from qfluentwidgets import FluentIcon as FIF, MenuAnimationType, FluentThemeColor
+from qfluentwidgets import TableWidget, PrimaryPushButton, TextEdit, RoundMenu, TeachingTip, InfoBarIcon, \
+    TeachingTipTailPosition, Action
+
+from custom_widgets import CustomHeaderView
 
 
-class Page1(QWidget):
-    def __init__(self):
-        super().__init__()
+class SqlGenerator(QFrame):
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self.setObjectName('Page1')
         self.md_content = ""  # Initialize md_content
         self.initUI()
         self.column_colors = {}
@@ -20,15 +27,15 @@ class Page1(QWidget):
         layout = QHBoxLayout()
 
         # Left side: QTextEdit
-        self.textEdit = QPlainTextEdit()
+        self.textEdit = TextEdit()
         layout.addWidget(self.textEdit)
 
         # Right side: QTableWidget and QPushButton
         right_layout = QVBoxLayout()
-        self.tableWidget = QTableWidget()
+        self.tableWidget = TableWidget()
         right_layout.addWidget(self.tableWidget)
 
-        self.sqlButton = QPushButton("Generate SQL")
+        self.sqlButton = PrimaryPushButton("Generate SQL",self)
         self.sqlButton.clicked.connect(self.generateSQL)
         right_layout.addWidget(self.sqlButton)
 
@@ -74,26 +81,20 @@ class Page1(QWidget):
         # 列校验 采用特征叠加判断具体列
 
     def showContextMenu(self, pos):
-        contextMenu = QMenu(self)
+        column = self.tableWidget.horizontalHeader().logicalIndexAt(pos)
+        if column == -1:  # 如果没有点击到有效列，直接返回
+            return
+        contextMenu = RoundMenu(parent=self)
 
         for attribute in self.attributes:
             Icon = self.createColorIcon(attribute['color'])
-            action = QAction(Icon, attribute['name'], self)
+            action = Action(FIF.COPY, attribute['name'])
+            action.triggered.connect(lambda checked, c=attribute['color']: self.setColumnColor(column, c))
             contextMenu.addAction(action)
 
-        resetAction = QAction("Reset", self)
+        resetAction = Action(text="Reset")
         contextMenu.addAction(resetAction)
-
-        action = contextMenu.exec_(self.tableWidget.mapToGlobal(pos))
-        if action:
-            col = self.tableWidget.horizontalHeader().logicalIndexAt(pos)
-            for attribute in self.attributes:
-                if action.text() == attribute['name']:
-                    self.resetColumnColor(attribute['color'])
-                    self.setColumnColor(col, attribute['color'])
-                    break
-            if action == resetAction:
-                self.setColumnColor(col, None)
+        contextMenu.exec_(self.tableWidget.horizontalHeader().viewport().mapToGlobal(pos))
 
     def createColorIcon(self, color):
         pixmap = QPixmap(16, 16)
@@ -116,11 +117,24 @@ class Page1(QWidget):
         if header:
             if color:
                 header.setForeground(QBrush(color))
+                header.setBackground(QBrush(color))
                 self.column_colors[col] = color
             else:
-                header.setForeground(QBrush())
+                header.setForeground(QColor(0,0,0))
                 if col in self.column_colors:
                     del self.column_colors[col]
+
+    def showBottomTip(self):
+        TeachingTip.create(
+            target=self.button2,
+            icon=InfoBarIcon.SUCCESS,
+            title='提示',
+            content="已复制到剪贴板",
+            isClosable=True,
+            tailPosition=TeachingTipTailPosition.TOP,
+            duration=2000,
+            parent=self
+        )
 
     def generateSQL(self):
         row_count = self.tableWidget.rowCount()
@@ -154,3 +168,5 @@ class Page1(QWidget):
 
         clipboard = QApplication.clipboard()
         clipboard.setText(create_table_sql)
+
+        self.showBottomTip()

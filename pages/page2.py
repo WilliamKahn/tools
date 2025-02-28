@@ -1,8 +1,10 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QFrame
 
-class Page2(QWidget):
-    def __init__(self):
-        super().__init__()
+
+class Page2(QFrame):
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self.setObjectName('Page2')
         self.initUI()
 
     def initUI(self):
