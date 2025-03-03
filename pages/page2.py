@@ -1,5 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QFrame
-
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QFrame
 
 class Page2(QFrame):
     def __init__(self, parent=None):

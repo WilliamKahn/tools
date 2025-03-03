@@ -1,14 +1,10 @@
-from PIL.ImageDraw2 import Brush
-from PyQt5.QtGui import QIcon, QPixmap, QPainter, QColor, QBrush
-from PyQt5.QtWidgets import QVBoxLayout, QTableWidgetItem, QHBoxLayout, \
-    QApplication, QMenu, QAction, QMessageBox, QFrame
-from PyQt5.QtCore import Qt
+from PySide6 import QtGui
+from PySide6.QtWidgets import QVBoxLayout, QTableWidgetItem, QHBoxLayout, \
+    QApplication, QMessageBox, QFrame
+from PySide6.QtCore import Qt, QPoint
 import re
-from qfluentwidgets import FluentIcon as FIF, MenuAnimationType, FluentThemeColor
 from qfluentwidgets import TableWidget, PrimaryPushButton, TextEdit, RoundMenu, TeachingTip, InfoBarIcon, \
-    TeachingTipTailPosition, Action
-
-from custom_widgets import CustomHeaderView
+    TeachingTipTailPosition, Action, StyleSheetBase, FluentThemeColor, InfoBar, InfoBarPosition, FluentIcon
 
 
 class SqlGenerator(QFrame):
@@ -17,11 +13,8 @@ class SqlGenerator(QFrame):
         self.setObjectName('Page1')
         self.md_content = ""  # Initialize md_content
         self.initUI()
-        self.column_colors = {}
-        self.attributes = (
-            {'name': "字段",'color': Qt.red},
-            {'name': "类型",'color': Qt.green},
-            {'name': "备注", 'color': Qt.gray})
+        self.column_map = {}
+        self.attributes = ("字段", "类型", "备注")
 
     def initUI(self):
         layout = QHBoxLayout()
@@ -45,8 +38,8 @@ class SqlGenerator(QFrame):
         self.textEdit.textChanged.connect(self.updateTable)
 
         # Enable custom context menu
-        self.tableWidget.horizontalHeader().setContextMenuPolicy(Qt.CustomContextMenu)
-        self.tableWidget.horizontalHeader().customContextMenuRequested.connect(self.showContextMenu)
+        self.tableWidget.horizontalHeader().setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.tableWidget.horizontalHeader().customContextMenuRequested[QPoint].connect(self.showContextMenu)
 
     def updateTable(self):
         md_content = self.textEdit.toPlainText()
@@ -87,51 +80,45 @@ class SqlGenerator(QFrame):
         contextMenu = RoundMenu(parent=self)
 
         for attribute in self.attributes:
-            Icon = self.createColorIcon(attribute['color'])
-            action = Action(FIF.COPY, attribute['name'])
-            action.triggered.connect(lambda checked, c=attribute['color']: self.setColumnColor(column, c))
+            action = Action(text = attribute)
+            action.triggered.connect(lambda checked, attr=attribute: self.setColumnFont(column, attr))
             contextMenu.addAction(action)
 
         resetAction = Action(text="Reset")
+        resetAction.triggered.connect(lambda checked: self.setColumnFont(column, None))
         contextMenu.addAction(resetAction)
-        contextMenu.exec_(self.tableWidget.horizontalHeader().viewport().mapToGlobal(pos))
+        contextMenu.exec_(self.tableWidget.horizontalHeader().mapToGlobal(pos))
 
-    def createColorIcon(self, color):
-        pixmap = QPixmap(16, 16)
-        pixmap.fill(Qt.transparent)
-        painter = QPainter(pixmap)
-        painter.setBrush(QColor(color))
-        painter.setPen(Qt.NoPen)
-        painter.drawEllipse(6, 6, 4, 4)
-        painter.end()
-        return QIcon(pixmap)
 
-    def resetColumnColor(self, color):
-        for col, col_color in self.column_colors.items():
-            if col_color == color:
-                self.setColumnColor(col, None)
-                break
-
-    def setColumnColor(self, col, color):
+    def setColumnFont(self, col, hint):
         header = self.tableWidget.horizontalHeaderItem(col)
         if header:
-            if color:
-                header.setForeground(QBrush(color))
-                header.setBackground(QBrush(color))
-                self.column_colors[col] = color
+            if hint:
+                self.resetColumnFont(hint)
+                self.column_map[col] = (header.text(),hint)
+                header.setText(hint)
             else:
-                header.setForeground(QColor(0,0,0))
-                if col in self.column_colors:
-                    del self.column_colors[col]
+                text = self.column_map[col][0]
+                header.setText(text)
+                if col in self.column_map:
+                    del self.column_map[col]
+
+
+    def resetColumnFont(self, hint):
+        for col, col_hint in self.column_map.items():
+            if col_hint[1] == hint:
+                self.setColumnFont(col, None)
+                break
+
 
     def showBottomTip(self):
-        TeachingTip.create(
-            target=self.button2,
-            icon=InfoBarIcon.SUCCESS,
-            title='提示',
-            content="已复制到剪贴板",
+        InfoBar.success(
+            title='成功生成sql',
+            content="成功拷贝到剪切板",
+            orient=Qt.Orientation.Horizontal,
             isClosable=True,
-            tailPosition=TeachingTipTailPosition.TOP,
+            position=InfoBarPosition.TOP,
+            # position='Custom',   # NOTE: use custom info bar manager
             duration=2000,
             parent=self
         )
@@ -146,13 +133,13 @@ class SqlGenerator(QFrame):
         for i in range(col_count):
             header_item = self.tableWidget.horizontalHeaderItem(i)
             if header_item:
-                if i in self.column_colors:
-                    color = self.column_colors[i]
-                    if color == Qt.red:
+                if i in self.column_map:
+                    hint = self.column_map[i][1]
+                    if hint == "字段":
                         col_name_index = i
-                    elif color == Qt.green:
+                    elif hint == "类型":
                         col_type_index = i
-                    elif color == Qt.gray:
+                    elif hint == "备注":
                         col_comment_index = i
         if col_name_index == -1 or col_type_index == -1:
             QMessageBox.warning(self, "Error", "No column selected as field.")
