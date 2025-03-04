@@ -2,7 +2,7 @@ from PySide6.QtWidgets import QVBoxLayout, QTableWidgetItem, QHBoxLayout, \
     QApplication, QFrame
 from PySide6.QtCore import Qt
 import re
-from qfluentwidgets import TableWidget, PrimaryPushButton, TextEdit, InfoBar, InfoBarPosition, MessageBox
+from qfluentwidgets import TableWidget, PrimaryPushButton, TextEdit, InfoBar, InfoBarPosition, MessageBox, PlainTextEdit
 
 
 class SqlGenerator(QFrame):
@@ -33,7 +33,7 @@ class SqlGenerator(QFrame):
         self.textEdit.textChanged.connect(self.updateTable)
 
     def updateTable(self):
-        md_content = self.textEdit.toPlainText()
+        md_content = self.textEdit.toMarkdown()
         rows = []
         # todo 格式校验
         # 格式转换
@@ -85,17 +85,21 @@ class SqlGenerator(QFrame):
             MessageBox( "Error", "less than 2 columns",self).exec()
             return
 
+        flag = False
         for i in range(row_count):
             col_name = self.tableWidget.item(i, 0).text()
+            if col_name == "id":
+                flag = True
             col_type = self.tableWidget.item(i, 1).text()
             if col_count > 2:
                 col_comment = self.tableWidget.item(i, 2).text()
-                columns.append(f"'{col_name}' {col_type} COMMENT '{col_comment}'")
+                columns.append(f"\n`{col_name}` {col_type} COMMENT '{col_comment}'")
             else:
-                columns.append(f"'{col_name}' {col_type}")
-
-        create_table_sql = f"CREATE TABLE table_name ({', '.join(columns)});"
-
+                columns.append(f"\n`{col_name}` {col_type}")
+        if flag:
+            columns.append(f"\nPRIMARY KEY (`id`)\n")
+        create_table_sql = f"CREATE TABLE IF NOT EXISTS `table_name` ({','.join(columns)})"
+        create_table_sql += f" ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='test';"
         clipboard = QApplication.clipboard()
         clipboard.setText(create_table_sql)
 

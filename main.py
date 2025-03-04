@@ -4,7 +4,6 @@ from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 from qfluentwidgets import NavigationItemPosition, FluentWindow, setTheme, Theme
 from qfluentwidgets import FluentIcon as FIF
-
 from pages.page2 import Page2
 from pages.sql_generator import SqlGenerator
 
