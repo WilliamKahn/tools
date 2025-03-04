@@ -1,20 +1,15 @@
-from PySide6 import QtGui
 from PySide6.QtWidgets import QVBoxLayout, QTableWidgetItem, QHBoxLayout, \
-    QApplication, QMessageBox, QFrame
-from PySide6.QtCore import Qt, QPoint
+    QApplication, QFrame
+from PySide6.QtCore import Qt
 import re
-from qfluentwidgets import TableWidget, PrimaryPushButton, TextEdit, RoundMenu, TeachingTip, InfoBarIcon, \
-    TeachingTipTailPosition, Action, StyleSheetBase, FluentThemeColor, InfoBar, InfoBarPosition, FluentIcon
+from qfluentwidgets import TableWidget, PrimaryPushButton, TextEdit, InfoBar, InfoBarPosition, MessageBox
 
 
 class SqlGenerator(QFrame):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.setObjectName('Page1')
-        self.md_content = ""  # Initialize md_content
         self.initUI()
-        self.column_map = {}
-        self.attributes = ("字段", "类型", "备注")
 
     def initUI(self):
         layout = QHBoxLayout()
@@ -36,10 +31,6 @@ class SqlGenerator(QFrame):
         self.setLayout(layout)
 
         self.textEdit.textChanged.connect(self.updateTable)
-
-        # Enable custom context menu
-        self.tableWidget.horizontalHeader().setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.tableWidget.horizontalHeader().customContextMenuRequested[QPoint].connect(self.showContextMenu)
 
     def updateTable(self):
         md_content = self.textEdit.toPlainText()
@@ -73,48 +64,11 @@ class SqlGenerator(QFrame):
                     self.tableWidget.setItem(i, j, QTableWidgetItem(cell.strip()))
         # 列校验 采用特征叠加判断具体列
 
-    def showContextMenu(self, pos):
-        column = self.tableWidget.horizontalHeader().logicalIndexAt(pos)
-        if column == -1:  # 如果没有点击到有效列，直接返回
-            return
-        contextMenu = RoundMenu(parent=self)
-
-        for attribute in self.attributes:
-            action = Action(text = attribute)
-            action.triggered.connect(lambda checked, attr=attribute: self.setColumnFont(column, attr))
-            contextMenu.addAction(action)
-
-        resetAction = Action(text="Reset")
-        resetAction.triggered.connect(lambda checked: self.setColumnFont(column, None))
-        contextMenu.addAction(resetAction)
-        contextMenu.exec_(self.tableWidget.horizontalHeader().mapToGlobal(pos))
-
-
-    def setColumnFont(self, col, hint):
-        header = self.tableWidget.horizontalHeaderItem(col)
-        if header:
-            if hint:
-                self.resetColumnFont(hint)
-                self.column_map[col] = (header.text(),hint)
-                header.setText(hint)
-            else:
-                text = self.column_map[col][0]
-                header.setText(text)
-                if col in self.column_map:
-                    del self.column_map[col]
-
-
-    def resetColumnFont(self, hint):
-        for col, col_hint in self.column_map.items():
-            if col_hint[1] == hint:
-                self.setColumnFont(col, None)
-                break
-
 
     def showBottomTip(self):
         InfoBar.success(
             title='成功生成sql',
-            content="成功拷贝到剪切板",
+            content="已经复制到剪切板",
             orient=Qt.Orientation.Horizontal,
             isClosable=True,
             position=InfoBarPosition.TOP,
@@ -127,29 +81,18 @@ class SqlGenerator(QFrame):
         row_count = self.tableWidget.rowCount()
         col_count = self.tableWidget.columnCount()
         columns = []
-        col_name_index = -1
-        col_type_index = -1
-        col_comment_index = -1
-        for i in range(col_count):
-            header_item = self.tableWidget.horizontalHeaderItem(i)
-            if header_item:
-                if i in self.column_map:
-                    hint = self.column_map[i][1]
-                    if hint == "字段":
-                        col_name_index = i
-                    elif hint == "类型":
-                        col_type_index = i
-                    elif hint == "备注":
-                        col_comment_index = i
-        if col_name_index == -1 or col_type_index == -1:
-            QMessageBox.warning(self, "Error", "No column selected as field.")
+        if col_count < 2:
+            MessageBox( "Error", "less than 2 columns",self).exec()
             return
 
         for i in range(row_count):
-            col_name = self.tableWidget.item(i, col_name_index).text()
-            col_type = self.tableWidget.item(i, col_type_index).text()
-            col_comment = self.tableWidget.item(i, col_comment_index).text()
-            columns.append(f"'{col_name}' {col_type} COMMENT '{col_comment}'")
+            col_name = self.tableWidget.item(i, 0).text()
+            col_type = self.tableWidget.item(i, 1).text()
+            if col_count > 2:
+                col_comment = self.tableWidget.item(i, 2).text()
+                columns.append(f"'{col_name}' {col_type} COMMENT '{col_comment}'")
+            else:
+                columns.append(f"'{col_name}' {col_type}")
 
         create_table_sql = f"CREATE TABLE table_name ({', '.join(columns)});"
 
