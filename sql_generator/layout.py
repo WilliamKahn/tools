@@ -2,13 +2,13 @@ from PySide6.QtWidgets import QVBoxLayout, QTableWidgetItem, QHBoxLayout, \
     QApplication, QFrame
 from PySide6.QtCore import Qt
 import re
-from qfluentwidgets import TableWidget, PrimaryPushButton, TextEdit, InfoBar, InfoBarPosition, MessageBox, PlainTextEdit
+from qfluentwidgets import TableWidget, PrimaryPushButton, TextEdit, InfoBar, InfoBarPosition, MessageBox
 
 
 class SqlGenerator(QFrame):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-        self.setObjectName('Page1')
+        self.setObjectName('SqlGenerator')
         self.initUI()
 
     def initUI(self):
@@ -104,3 +104,16 @@ class SqlGenerator(QFrame):
         clipboard.setText(create_table_sql)
 
         self.showBottomTip()
+
+    def serialize(self):
+        """序列化保存配置数据"""
+        data = {
+            "markdown_content": self.textEdit.toMarkdown()
+        }
+        return data
+
+    def deserialize(self, data):
+        """反序列化加载配置数据"""
+        if "markdown_content" in data:
+            self.textEdit.setMarkdown(data["markdown_content"])
+            # updateTable will be called through the signal connection

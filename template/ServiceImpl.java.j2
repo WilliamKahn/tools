@@ -1,0 +1,68 @@
+package {{ packages['ServiceImpl'] }};
+
+import {{ packages['DO'] }}.{{ TableName }}DO;
+import {{ packages['DAO'] }}.{{ TableName }}DAO;
+import {{ packages['Service'] }}.{{ TableName }}Service;
+import {{ packages['QueryDTO'] }}.{{ TableName }}QueryDTO;
+import {{ packages['VO'] }}.{{ TableName }}VO;
+import {{ packages['ListVO'] }}.{{ TableName }}ListVO;
+import {{ packages['CreateDTO'] }}.{{ TableName }}CreateDTO;
+import {{ packages['UpdateDTO'] }}.{{ TableName }}UpdateDTO;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * @author {{ author }}
+ */
+@Service
+public class {{ TableName }}ServiceImpl implements {{ TableName }}Service {
+
+    @Resource
+    private {{ TableName }}DAO {{ tableName }}DAO;
+
+    @Override
+    public void create{{ TableName }}({{ TableName }}CreateDTO {{ tableName }}CreateDTO) {
+        {{ TableName }}DO {{ tableName }}DO = new {{ TableName }}DO();
+        BeanUtils.copyProperties({{ tableName }}CreateDTO, {{ tableName }}DO);
+        {{ tableName }}DAO.save({{ tableName }}DO);
+    }
+
+    @Override
+    public void update{{ TableName }}({{ TableName }}UpdateDTO {{ tableName }}UpdateDTO) {
+        {{ TableName }}DO {{ tableName }}DO = new {{ TableName }}DO();
+        BeanUtils.copyProperties({{ tableName }}UpdateDTO, {{ tableName }}DO);
+        {{ tableName }}DAO.updateById({{ tableName }}DO);
+    }
+
+    @Override
+    public void delete{{ TableName }}(List<{{ id_type }}> {{ primary_key }}s) {
+        {{ tableName }}DAO.removeBatchByIds({{ primary_key }}s);
+    }
+
+    @Override
+    public {{ TableName }}VO get{{ TableName }}({{ id_type }} {{ primary_key }}) {
+        {{ TableName }}DO {{ tableName }}DO = {{ tableName }}DAO.getById({{ primary_key }});
+        {{ TableName }}VO result = new {{ TableName }}VO();
+        BeanUtils.copyProperties({{ tableName }}DO, result);
+        return result;
+    }
+
+    @Override
+    public PageInfo<{{ TableName }}ListVO> page{{ TableName }}({{ TableName }}QueryDTO {{ tableName }}QueryDTO) {
+        PageHelper.startPage({{ tableName }}QueryDTO.getPageNum(), {{ tableName }}QueryDTO.getPageSize());
+        List<{{ TableName }}DO> list = {{ tableName }}DAO.list();
+        PageInfo result = new PageInfo<>(list);
+        List<{{ TableName }}ListVO> ListVO = list.stream().map(entity -> {
+            {{ TableName }}ListVO vo = new {{ TableName }}ListVO();
+            BeanUtils.copyProperties(entity, vo);
+            return vo;
+        }).collect(Collectors.toList());
+        result.setList(ListVO);
+        return result;
+    }
+}

@@ -1,0 +1,56 @@
+package {{ packages['Service'] }};
+
+import {{ packages['VO'] }}.{{ TableName }}VO;
+import {{ packages['ListVO'] }}.{{ TableName }}ListVO;
+import {{ packages['QueryDTO'] }}.{{ TableName }}QueryDTO;
+import {{ packages['CreateDTO'] }}.{{ TableName }}CreateDTO;
+import {{ packages['UpdateDTO'] }}.{{ TableName }}UpdateDTO;
+import com.github.pagehelper.PageInfo;
+import java.util.List;
+
+/**
+ * @author {{ author }}
+ */
+public interface {{ TableName }}Service {
+
+    /**
+	 * 新增{{ table_remark }}
+	 *
+	 * @param {{ tableName }}CreateDTO
+	 */
+    void create{{ TableName }}({{ TableName }}CreateDTO {{ tableName }}CreateDTO);
+
+    /**
+	 * 修改{{ table_remark }}
+	 *
+	 * @param {{ tableName }}UpdateDTO
+	 */
+    void update{{ TableName }}({{ TableName }}UpdateDTO {{ tableName }}UpdateDTO);
+
+    /**
+	 * 删除{{ table_remark }}
+	 *
+	 * @param {{ primary_key }}List
+	 */
+    void delete{{ TableName }}(List<{{ id_type }}> {{ primary_key }}List);
+
+	/**
+     * {{ table_remark }}详情
+     *
+     * @param id id
+     * @return po
+     */
+    {{ TableName }}VO get{{ TableName }}({{ id_type }} {{ primary_key }});
+
+    /**
+	 * {{ table_remark }}列表分页
+	 *
+	 * @param {{ TableName }}QueryDTO
+	 * @return page
+	 */
+    PageInfo<{{ TableName }}ListVO> page{{ TableName }}({{ TableName }}QueryDTO {{ TableName }}QueryDTO);
+
+}
+
+
+
