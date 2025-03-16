@@ -1,8 +1,7 @@
 import os
 
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QFileDialog, QMessageBox, QDialog, \
-    QVBoxLayout, QTextEdit, QPushButton
-from qfluentwidgets import CheckBox, PushButton, LineEdit, BodyLabel
+    QVBoxLayout, QTextEdit, QPushButton, QTextEdit, QLabel, QFileDialog, QCheckBox, QLineEdit
 
 
 class ListItemWidget(QWidget):
@@ -18,31 +17,31 @@ class ListItemWidget(QWidget):
         layout.setSpacing(8)  # Add spacing between elements
 
         # Checkbox takes minimal space
-        self.checkbox = CheckBox()
+        self.checkbox = QCheckBox()
         layout.addWidget(self.checkbox, 0)
 
         # Group module and package buttons in a separate layout to save space
         buttons_layout = QHBoxLayout()
         buttons_layout.setSpacing(2)
 
-        self.module_button = PushButton("Module")
+        self.module_button = QPushButton("Module")
         self.module_button.clicked.connect(self.select_folder)
         buttons_layout.addWidget(self.module_button)
 
-        self.package_button = PushButton("Package")
+        self.package_button = QPushButton("Package")
         self.package_button.clicked.connect(self.select_folder)
         buttons_layout.addWidget(self.package_button)
 
         layout.addLayout(buttons_layout, 1)
 
         # Alias edit with fixed width
-        self.alias_edit = LineEdit()
+        self.alias_edit = QLineEdit()
         self.alias_edit.setPlaceholderText("Alias")
         self.alias_edit.setFixedWidth(100)
         layout.addWidget(self.alias_edit, 0)
 
         # Display text takes all available space
-        self.display_text = BodyLabel(os.path.basename(file_path))
+        self.display_text = QLabel(os.path.basename(file_path))
         self.display_text.setToolTip(file_path)  # Show full path on hover
         self.display_text.setWordWrap(False)
         layout.addWidget(self.display_text, 1)  # Give stretch factor 1

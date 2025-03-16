@@ -1,132 +1,126 @@
-from PySide6.QtGui import QPalette
-
+from PySide6.QtWidgets import QApplication
+from PySide6.QtGui import QPalette, QColor
+from PySide6.QtCore import Qt
 
 class ThemeManager:
-    """Manages light and dark theme color schemes"""
-
     @staticmethod
     def is_dark_mode(app):
-        # Get window color to determine if we're in dark mode
-        window_color = app.palette().color(QPalette.ColorRole.Window)
-        return window_color.lightness() < 128
+        # Check if app is in dark mode based on text color
+        palette = app.palette()
+        text_color = palette.color(QPalette.WindowText)
+        return text_color.lightness() > 127
 
     @staticmethod
-    def get_theme_colors(app):
-        is_dark = ThemeManager.is_dark_mode(app)
+    def set_dark_mode(app, dark_mode=True):
+        palette = QPalette()
 
-        if is_dark:
-            return {
-                "window_bg": "#121212",
-                "sidebar_bg": "#1E1E1E",
-                "card_bg": "#2D2D2D",
-                "primary": "#90CAF9",
-                "text_primary": "#FFFFFF",
-                "text_secondary": "#B0B0B0",
-                "hover": "#3A3A3A",
-                "selected": "#263238",
-                "border": "#333333",
-                "divider": "#333333",
-                "shadow": "rgba(0,0,0,0.3)"
-            }
+        if dark_mode:
+            # Dark theme colors
+            palette.setColor(QPalette.ColorRole.Window, QColor(33, 33, 33))
+            palette.setColor(QPalette.ColorRole.WindowText, QColor(255, 255, 255))
+            palette.setColor(QPalette.ColorRole.Base, QColor(45, 45, 45))
+            palette.setColor(QPalette.ColorRole.AlternateBase, QColor(53, 53, 53))
+            palette.setColor(QPalette.ColorRole.ToolTipBase, QColor(33, 33, 33))
+            palette.setColor(QPalette.ColorRole.ToolTipText, QColor(255, 255, 255))
+            palette.setColor(QPalette.ColorRole.Text, QColor(255, 255, 255))
+            palette.setColor(QPalette.ColorRole.Button, QColor(53, 53, 53))
+            palette.setColor(QPalette.ColorRole.ButtonText, QColor(255, 255, 255))
+            palette.setColor(QPalette.ColorRole.Link, QColor(42, 130, 218))
+            palette.setColor(QPalette.ColorRole.Highlight, QColor(42, 130, 218))
+            palette.setColor(QPalette.ColorRole.HighlightedText, QColor(255, 255, 255))
         else:
-            return {
-                "window_bg": "#F5F5F5",
-                "sidebar_bg": "#FFFFFF",
-                "card_bg": "#FFFFFF",
-                "primary": "#2196F3",
-                "text_primary": "#212121",
-                "text_secondary": "#757575",
-                "hover": "#E8EAF6",
-                "selected": "#E3F2FD",
-                "border": "#E0E0E0",
-                "divider": "#EEEEEE",
-                "shadow": "rgba(0,0,0,0.1)"
-            }
+            # Light theme colors
+            palette.setColor(QPalette.ColorRole.Window, QColor(240, 240, 240))
+            palette.setColor(QPalette.ColorRole.WindowText, QColor(33, 33, 33))
+            palette.setColor(QPalette.ColorRole.Base, QColor(255, 255, 255))
+            palette.setColor(QPalette.ColorRole.AlternateBase, QColor(247, 247, 247))
+            palette.setColor(QPalette.ColorRole.ToolTipBase, QColor(255, 255, 255))
+            palette.setColor(QPalette.ColorRole.ToolTipText, QColor(33, 33, 33))
+            palette.setColor(QPalette.ColorRole.Text, QColor(33, 33, 33))
+            palette.setColor(QPalette.ColorRole.Button, QColor(240, 240, 240))
+            palette.setColor(QPalette.ColorRole.ButtonText, QColor(33, 33, 33))
+            palette.setColor(QPalette.ColorRole.Link, QColor(25, 118, 210))
+            palette.setColor(QPalette.ColorRole.Highlight, QColor(25, 118, 210))
+            palette.setColor(QPalette.ColorRole.HighlightedText, QColor(255, 255, 255))
+
+        app.setPalette(palette)
 
     @staticmethod
     def apply_stylesheet(app):
-        colors = ThemeManager.get_theme_colors(app)
+        is_dark = ThemeManager.is_dark_mode(app)
+
+        # Material Design colors
+        primary_color = "#1976D2"  # Blue 700
+        accent_color = "#FF4081"   # Pink A200
+
+        if is_dark:
+            bg_color = "#212121"        # Grey 900
+            surface_color = "#333333"   # Custom dark surface
+            on_surface = "#FFFFFF"      # White text
+            divider_color = "#424242"   # Grey 800
+        else:
+            bg_color = "#FAFAFA"        # Grey 50
+            surface_color = "#FFFFFF"   # White
+            on_surface = "#212121"      # Grey 900 text
+            divider_color = "#E0E0E0"   # Grey 300
 
         return f"""
-            /* Main Window */
             QMainWindow {{
-                background-color: {colors['window_bg']};
-            }}
-
-            /* Sidebar */
-            #sidebar {{
-                background-color: {colors['sidebar_bg']};
-                border-right: 1px solid {colors['border']};
+                background-color: {bg_color};
             }}
             
-            /* Sidebar Title */
-            #sidebar-title {{
-                color: {colors['text_primary']};
+            QPushButton {{
+                padding: 10px 16px;
+            }}
+
+            QWidget#sidebar {{
+                background-color: {surface_color};
+                border-right: 1px solid {divider_color};
+            }}
+
+            QLabel.sidebar-title {{
+                color: {on_surface};
                 font-size: 18px;
                 font-weight: bold;
-                padding: 8px;
-                margin-bottom: 8px;
+                padding: 16px 0;
             }}
 
-            /* Content Area */
-            QStackedWidget {{
-                background-color: {colors['window_bg']};
-            }}
-
-            /* Toggle Button */
-            #toggle_btn {{
+            QPushButton.sidebar-button {{
                 background-color: transparent;
+                color: {on_surface};
+                text-align: left;
                 border: none;
-                padding: 8px;
-                border-radius: 18px;
+                border-radius: 4px;
+                padding: 12px 16px;
+            }}
+
+            QPushButton.sidebar-button:hover {{
+                background-color: {primary_color}30;
+            }}
+
+            QPushButton.sidebar-button:checked {{
+                background-color: {primary_color}50;
+            }}
+
+            QLabel#sidebar-button-text {{
+                color: {on_surface};
+                font-size: 14px;
+            }}
+
+            QFrame.content-card {{
+                background-color: {surface_color};
+                border-radius: 8px;
                 margin: 8px;
             }}
-            #toggle_btn:hover {{
-                background-color: {colors['hover']};
-            }}
-            #toggle_btn:pressed {{
-                background-color: {colors['selected']};
+
+            QLabel.title {{
+                color: {on_surface};
+                font-size: 16px;
+                font-weight: bold;
             }}
 
-            /* Menu Buttons */
-            .menu-btn {{
-                background-color: transparent;
-                color: {colors['text_primary']};
-                text-align: left;
-                padding: 12px 16px;
-                border: none;
-                border-radius: 24px;
-                margin: 4px 8px;
-                font-weight: 500;
+            QLabel.body-text {{
+                color: {on_surface};
                 font-size: 14px;
-            }}
-            .menu-btn:hover {{
-                background-color: {colors['hover']};
-            }}
-            .menu-btn:checked {{
-                background-color: {colors['selected']};
-                color: {colors['primary']};
-            }}
-
-            /* Content Cards */
-            .content-card {{
-                background-color: {colors['card_bg']};
-                border-radius: 12px;
-                padding: 20px;
-                margin: 16px;
-            }}
-
-            /* Typography */
-            .title {{
-                font-size: 22px;
-                font-weight: 500;
-                color: {colors['text_primary']};
-                margin-bottom: 8px;
-            }}
-
-            .body-text {{
-                font-size: 14px;
-                color: {colors['text_secondary']};
-                line-height: 1.5;
             }}
         """

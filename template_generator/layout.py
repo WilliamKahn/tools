@@ -1,8 +1,7 @@
 import os
-from time import sleep
 
-from PySide6.QtWidgets import QVBoxLayout, QFrame, QFileDialog, QListWidgetItem, QHBoxLayout
-from qfluentwidgets import PushButton, ListWidget, BodyLabel, ComboBox, LineEdit
+from PySide6.QtWidgets import QVBoxLayout, QFrame, QFileDialog, QListWidgetItem, QHBoxLayout, QLabel, QComboBox, \
+    QPushButton, QLineEdit, QListWidget, QScrollArea, QWidget
 from template_generator.db_config_dialog import DatabaseConfigDialog
 from template_generator.db_config_model import DBConfigModel
 from template_generator.dict_edit_dialog import DictionaryEditorDialog
@@ -24,28 +23,28 @@ class TemplateGenerator(QFrame):
 
         db_section = QHBoxLayout()
         # Label
-        db_section.addWidget(BodyLabel(text = "Database:"))
+        db_section.addWidget(QLabel(text = "Database:"))
 
         # Dropdown for selecting database configuration
-        self.db_combo = ComboBox()
+        self.db_combo = QComboBox()
         self.db_combo.setMinimumWidth(200)
         self.db_config.dataChanged.connect(self.update_combo)
         db_section.addWidget(self.db_combo)
 
         # Edit button for database configurations
-        self.db_edit_button = PushButton(text = "Edit")
+        self.db_edit_button = QPushButton("Edit")
         self.db_edit_button.clicked.connect(self.edit_db_config)
         db_section.addWidget(self.db_edit_button)
 
-        self.db_name = LineEdit()
+        self.db_name = QLineEdit()
         self.db_name.setPlaceholderText("Database Name")
         db_section.addWidget(self.db_name)
 
-        self.table_name = LineEdit()
+        self.table_name = QLineEdit()
         self.table_name.setPlaceholderText("Table Name")
         db_section.addWidget(self.table_name)
 
-        self.dict_edit_button = PushButton(text = "Extra")
+        self.dict_edit_button = QPushButton("Extra")
         self.dict_edit_button.clicked.connect(self.edit_dictionary)
         db_section.addWidget(self.dict_edit_button)
 
@@ -53,18 +52,24 @@ class TemplateGenerator(QFrame):
         layout.addLayout(db_section)
 
         # Configuration part: Button to select project path
-        self.config_button = PushButton(text = "Select Project Path")
+        self.config_button = QPushButton("Select Project Path")
         self.config_button.clicked.connect(self.select_project_path)
         layout.addWidget(self.config_button)
 
+        self.scroll_area = QScrollArea()
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_content = QWidget()
+        self.scroll_layout = QVBoxLayout(self.scroll_content)
+        self.scroll_area.setWidget(self.scroll_content)
+        layout.addWidget(self.scroll_area)
         # List widget to hold list items
-        self.list_widget = ListWidget()
-        layout.addWidget(self.list_widget)
+        # self.list_widget = QListWidget()
+        # layout.addWidget(self.list_widget)
 
         # Add a sample list item
         self.load_files("./template")
 
-        self.generate_button = PushButton(text ="Generate files")
+        self.generate_button = QPushButton("Generate files")
         self.generate_button.clicked.connect(self.on_generate_button_clicked)
         layout.addWidget(self.generate_button)
 
@@ -77,14 +82,15 @@ class TemplateGenerator(QFrame):
             self.config_button.setToolTip(path)
 
     def load_files(self, directory):
-        self.list_widget.clear()
+        # self.list_widget.clear()
         for file_name in os.listdir(directory):
             file_path = os.path.join(directory, file_name)
             if os.path.isfile(file_path):
-                list_item = QListWidgetItem(self.list_widget)
+                # list_item = QListWidgetItem(self.list_widget)
                 list_item_widget = ListItemWidget(file_path)
                 self.list.append(list_item_widget)
-                self.list_widget.setItemWidget(list_item, list_item_widget)
+                # self.list_widget.setItemWidget(list_item, list_item_widget)
+                self.scroll_layout.addWidget(list_item_widget)
 
     def edit_db_config(self):
         dialog = DatabaseConfigDialog(self.db_config)

@@ -1,5 +1,5 @@
-from PySide6.QtCore import QSize, QPropertyAnimation, QEasingCurve
-from PySide6.QtGui import QIcon, Qt
+from PySide6.QtCore import QSize, QPropertyAnimation, QEasingCurve, Qt
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QPushButton
 
 
@@ -8,9 +8,9 @@ class MaterialSidebarButton(QPushButton):
         super().__init__(parent)
         self.setCheckable(True)
         self.setText(text)
-        self.setIcon(QIcon.fromTheme("application-exit"))
+        self.setIcon(QIcon(f":/icons/{icon_name}.svg"))
         self.setIconSize(QSize(22, 22))
-        self.setCursor(Qt.PointingHandCursor)
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setObjectName("menu-btn")
         self.setProperty("class", "menu-btn")
 
@@ -23,7 +23,7 @@ class MaterialSidebarButton(QPushButton):
         # Animation for icon size change
         self._animation = QPropertyAnimation(self, b"iconSize")
         self._animation.setDuration(150)
-        self._animation.setEasingCurve(QEasingCurve.OutCubic)
+        self._animation.setEasingCurve(QEasingCurve.Type.OutCubic)
 
     def update_state(self, expanded):
         # Update button appearance based on sidebar state
@@ -39,7 +39,7 @@ class MaterialSidebarButton(QPushButton):
         anim.setDuration(300)
         anim.setStartValue(self.width())
         anim.setEndValue(self._expanded_width if expanded else self._collapsed_width)
-        anim.setEasingCurve(QEasingCurve.OutCubic)
+        anim.setEasingCurve(QEasingCurve.Type.OutCubic)
         anim.start()
 
         # Also set maximum width to match minimum when collapsed
@@ -47,5 +47,5 @@ class MaterialSidebarButton(QPushButton):
         max_anim.setDuration(300)
         max_anim.setStartValue(self.width())
         max_anim.setEndValue(self._expanded_width if expanded else self._collapsed_width)
-        max_anim.setEasingCurve(QEasingCurve.OutCubic)
+        max_anim.setEasingCurve(QEasingCurve.Type.OutCubic)
         max_anim.start()

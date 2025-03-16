@@ -1,8 +1,8 @@
-from PySide6.QtWidgets import QVBoxLayout, QTableWidgetItem, QHBoxLayout, \
-    QApplication, QFrame
-from PySide6.QtCore import Qt
+from PySide6.QtWidgets import (QVBoxLayout, QTableWidgetItem, QHBoxLayout,
+                               QApplication, QFrame, QTableWidget, QPushButton,
+                               QTextEdit, QMessageBox, QLabel)
+from PySide6.QtCore import Qt, QTimer
 import re
-from qfluentwidgets import TableWidget, PrimaryPushButton, TextEdit, InfoBar, InfoBarPosition, MessageBox
 
 
 class SqlGenerator(QFrame):
@@ -15,15 +15,15 @@ class SqlGenerator(QFrame):
         layout = QHBoxLayout()
 
         # Left side: QTextEdit
-        self.textEdit = TextEdit()
+        self.textEdit = QTextEdit()
         layout.addWidget(self.textEdit)
 
         # Right side: QTableWidget and QPushButton
         right_layout = QVBoxLayout()
-        self.tableWidget = TableWidget()
+        self.tableWidget = QTableWidget()
         right_layout.addWidget(self.tableWidget)
 
-        self.sqlButton = PrimaryPushButton("Generate SQL",self)
+        self.sqlButton = QPushButton("Generate SQL", self)
         self.sqlButton.clicked.connect(self.generateSQL)
         right_layout.addWidget(self.sqlButton)
 
@@ -33,7 +33,9 @@ class SqlGenerator(QFrame):
         self.textEdit.textChanged.connect(self.updateTable)
 
     def updateTable(self):
-        md_content = self.textEdit.toMarkdown()
+        # Since PySide6 QTextEdit doesn't have toMarkdown method
+        # we'll use toPlainText instead
+        md_content = self.textEdit.toPlainText()
         rows = []
         # todo 格式校验
         # 格式转换
@@ -61,43 +63,53 @@ class SqlGenerator(QFrame):
             self.tableWidget.setRowCount(len(rows) - 1)
             for i, row in enumerate(rows[1:]):
                 for j, cell in enumerate(row):
-                    self.tableWidget.setItem(i, j, QTableWidgetItem(cell.strip()))
+                    if j < len(headers):  # Check to prevent index error
+                        self.tableWidget.setItem(i, j, QTableWidgetItem(cell.strip()))
         # 列校验 采用特征叠加判断具体列
 
-
     def showBottomTip(self):
-        InfoBar.success(
-            title='成功生成sql',
-            content="已经复制到剪切板",
-            orient=Qt.Orientation.Horizontal,
-            isClosable=True,
-            position=InfoBarPosition.TOP,
-            # position='Custom',   # NOTE: use custom info bar manager
-            duration=2000,
-            parent=self
-        )
+        # Replace InfoBar with a temporary notification
+        temp_label = QLabel('成功生成sql，已经复制到剪切板', self)
+        temp_label.setStyleSheet("background-color: #2196F3; color: white; padding: 8px; border-radius: 4px;")
+        temp_label.setAlignment(Qt.AlignCenter)
+
+        # Position at top
+        temp_label.setGeometry(self.width() // 2 - 150, 10, 300, 40)
+        temp_label.show()
+
+        # Hide after 2 seconds
+        QTimer.singleShot(2000, temp_label.deleteLater)
 
     def generateSQL(self):
         row_count = self.tableWidget.rowCount()
         col_count = self.tableWidget.columnCount()
         columns = []
         if col_count < 2:
-            MessageBox( "Error", "less than 2 columns",self).exec()
+            QMessageBox.critical(self, "Error", "less than 2 columns")
             return
 
         flag = False
         for i in range(row_count):
-            col_name = self.tableWidget.item(i, 0).text()
+            item0 = self.tableWidget.item(i, 0)
+            item1 = self.tableWidget.item(i, 1)
+            if not item0 or not item1:
+                continue
+
+            col_name = item0.text()
             if col_name == "id":
                 flag = True
-            col_type = self.tableWidget.item(i, 1).text()
+            col_type = item1.text()
+
             if col_count > 2:
-                col_comment = self.tableWidget.item(i, 2).text()
+                item2 = self.tableWidget.item(i, 2)
+                col_comment = item2.text() if item2 else ""
                 columns.append(f"\n`{col_name}` {col_type} COMMENT '{col_comment}'")
             else:
                 columns.append(f"\n`{col_name}` {col_type}")
+
         if flag:
             columns.append(f"\nPRIMARY KEY (`id`)\n")
+
         create_table_sql = f"CREATE TABLE IF NOT EXISTS `table_name` ({','.join(columns)})"
         create_table_sql += f" ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='test';"
         clipboard = QApplication.clipboard()
@@ -108,12 +120,12 @@ class SqlGenerator(QFrame):
     def serialize(self):
         """序列化保存配置数据"""
         data = {
-            "markdown_content": self.textEdit.toMarkdown()
+            "markdown_content": self.textEdit.toPlainText()  # Using toPlainText instead of toMarkdown
         }
         return data
 
     def deserialize(self, data):
         """反序列化加载配置数据"""
         if "markdown_content" in data:
-            self.textEdit.setMarkdown(data["markdown_content"])
+            self.textEdit.setPlainText(data["markdown_content"])  # Using setPlainText instead of setMarkdown
             # updateTable will be called through the signal connection

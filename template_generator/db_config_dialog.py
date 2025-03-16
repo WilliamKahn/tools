@@ -1,14 +1,14 @@
-from PySide6.QtWidgets import (QVBoxLayout, QHBoxLayout, QLabel, QFormLayout,
-                               QSplitter, QWidget)
-from PySide6.QtCore import Qt, Signal
-from qfluentwidgets import PushButton, LineEdit, MessageBox, ListWidget, RoundMenu, Action, FluentStyleSheet
-from qframelesswindow import FramelessDialog
+from lib2to3.fixes.fix_input import context
 
-class DatabaseConfigDialog(FramelessDialog):
+from PySide6.QtGui import QAction
+from PySide6.QtWidgets import (QVBoxLayout, QHBoxLayout, QLabel, QFormLayout,
+                               QSplitter, QWidget, QDialog, QListWidget, QLineEdit, QPushButton, QMenu, QMessageBox)
+from PySide6.QtCore import Qt, Signal
+
+class DatabaseConfigDialog(QDialog):
 
     def __init__(self, db_config):
         super().__init__()
-        FluentStyleSheet.DIALOG.apply(self)
         self.db_config = db_config
         self.current_config = None
         self.setWindowTitle("Database Configuration")
@@ -25,7 +25,7 @@ class DatabaseConfigDialog(FramelessDialog):
         left_widget = QWidget()
         left_layout = QVBoxLayout(left_widget)
 
-        self.config_list = ListWidget()
+        self.config_list = QListWidget()
         self.config_list.currentRowChanged.connect(self.on_config_selected)
         self.config_list.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.config_list.customContextMenuRequested.connect(self.show_context_menu)
@@ -39,30 +39,30 @@ class DatabaseConfigDialog(FramelessDialog):
 
         form_layout = QFormLayout()
 
-        self.name_edit = LineEdit()
+        self.name_edit = QLineEdit()
         form_layout.addRow("Name:", self.name_edit)
 
-        self.url_edit = LineEdit()
+        self.url_edit = QLineEdit()
         form_layout.addRow("URL:", self.url_edit)
 
-        self.user_edit = LineEdit()
+        self.user_edit = QLineEdit()
         form_layout.addRow("Username:", self.user_edit)
 
-        self.password_edit = LineEdit()
-        self.password_edit.setEchoMode(LineEdit.EchoMode.Password)
+        self.password_edit = QLineEdit()
+        self.password_edit.setEchoMode(QLineEdit.EchoMode.Password)
         form_layout.addRow("Password:", self.password_edit)
 
-        self.port_edit = LineEdit()
+        self.port_edit = QLineEdit()
         form_layout.addRow("Port:", self.port_edit)
 
         right_layout.addLayout(form_layout)
 
         # Action buttons
         buttons_layout = QHBoxLayout()
-        self.test_button = PushButton(text = "Test Connection")
+        self.test_button = QPushButton("Test Connection")
         self.test_button.clicked.connect(self.test_connection)
 
-        self.save_button = PushButton(text = "Save")
+        self.save_button = QPushButton("Save")
         self.save_button.clicked.connect(self.save_config)
 
         buttons_layout.addWidget(self.test_button)
@@ -98,8 +98,8 @@ class DatabaseConfigDialog(FramelessDialog):
         if self.config_list.count() == 0:
             return
 
-        menu = RoundMenu()
-        action = Action(text="Delete")
+        menu = QMenu()
+        action = QAction(text="Delete")
         action.triggered.connect(self.delete_config)
         menu.addAction(action)
 
@@ -113,7 +113,7 @@ class DatabaseConfigDialog(FramelessDialog):
         name = current_item.text()
 
         # Use MessageBox instead of QMessageBox for a more consistent UI
-        dialog = MessageBox(
+        dialog = QMessageBox(
             "Confirm Delete",
             f"Are you sure you want to delete '{name}'?",
             self
@@ -138,7 +138,7 @@ class DatabaseConfigDialog(FramelessDialog):
     def save_config(self):
         name = self.name_edit.text().strip()
         if not name:
-            MessageBox("Validation Error", "Please enter a name for this configuration", self).exec()
+            QMessageBox("Validation Error", "Please enter a name for this configuration", self).exec()
             return
 
         # Check if name already exists
@@ -214,9 +214,8 @@ class DatabaseConfigDialog(FramelessDialog):
 
             connection.close()
 
-            MessageBox("Connection Test", f"Connection successful!\nServer version: {version[0]}", self).exec()
+            QMessageBox.information(None, "Connection Test", f"Connection successful!\nServer version: {version[0]}")
         except ImportError:
-            MessageBox("Module Error", "PyMySQL is not installed. Please install it using 'pip install pymysql'",
-                       self).exec()
+            QMessageBox.critical(None, "Module Error", "PyMySQL is not installed. Please install it using 'pip install pymysql'")
         except Exception as e:
-            MessageBox("Connection Failed", f"Could not connect: {str(e)}", self).exec()
+            QMessageBox.critical(None, "Connection Failed", f"Could not connect: {str(e)}")

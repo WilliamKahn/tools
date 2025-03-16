@@ -1,5 +1,8 @@
-from PySide6.QtWidgets import QDialog, QHBoxLayout, QVBoxLayout, QPushButton, QTableWidgetItem, QSplitter, QWidget
-from qfluentwidgets import TableWidget, BodyLabel
+from PySide6.QtWidgets import QDialog, QHBoxLayout, QVBoxLayout, QPushButton, QTableWidgetItem, QSplitter, QWidget, \
+    QTableWidget, QLabel
+
+from content_card import ContentCard
+
 
 class DictionaryEditorDialog(QDialog):
 
@@ -25,9 +28,10 @@ class DictionaryEditorDialog(QDialog):
         splitter.addWidget(map_widget)
 
         # Table for dictionary entries
-        self.table = TableWidget()
+        self.table = QTableWidget()
         self.table.setColumnCount(2)
         self.table.setHorizontalHeaderLabels(["Key", "Value"])
+
         map_section.addWidget(self.table)
 
         # Buttons for adding and deleting rows
@@ -48,7 +52,10 @@ class DictionaryEditorDialog(QDialog):
         right_widget.setLayout(right_section)
         splitter.addWidget(right_widget)
 
-        self.description_label = BodyLabel("Description information goes here.")
+        self.description_label = ContentCard(
+            "title",
+            "Description information goes here.\n"
+                    "line2 ")
         right_section.addWidget(self.description_label)
 
         # Set the splitter ratio

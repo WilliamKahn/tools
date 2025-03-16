@@ -84,25 +84,32 @@ def create_file(path, content):
     with open(path, 'w', encoding='utf-8') as f:
         f.write(content)
 
-def parse_key(filePath):
-    fileName = filePath.split('/')[-1]
+def get_file_name(filePath):
+    parts = re.split(r'[/\\]', filePath)
+    fileName = parts[-1]
     return fileName.split('.')[0]
 # 获取格式
-def get_key_type(filePath):
-    fileName = filePath.split('/')[-1]
+def get_file_type(filePath):
+    parts = re.split(r'[/\\]', filePath)
+    fileName = parts[-1]
     return fileName.split('.')[1]
 
 def parse_value(filePath):
     package = filePath.replace('/', '.')
-    return package[1:]
+    # 去除开头和结尾的.(可能没有)
+    if package.startswith('.'):
+        package = package[1:]
+    if package.endswith('.'):
+        package = package[:-1]
+    return package
 
 def generate(database, db_name, table_name, project_path, extra, template_files):
     database["database"] = db_name
     packages = {}
     # 获取所有模板配置的包名
     for key, value in template_files.items():
-        if get_key_type(key) == "java":
-            packages[parse_key(key)] = parse_value(value[2]+"/"+value[3])
+        if get_file_type(key) == "java":
+            packages[get_file_name(key)] = parse_value(value[2]+"/"+value[3])
             #packages = {parse_key(key): parse_value(value[2]+"/"+value[3]) for key, value in template_files.items()}
 
     with connect_to_db(database) as conn:
@@ -132,16 +139,17 @@ def generate(database, db_name, table_name, project_path, extra, template_files)
             "primary_key": "id",
         }
         context.update(extra)
-        fileName = filePath.split('/')[-1]
         entity_code = render_template(filePath, context)
         module_path = f'/{module.replace(".", "/")}' if module else ''
-        part = fileName.split('.')
+
+        fileName = get_file_name(filePath)
+        fileType = get_file_type(filePath)
         src = "/"
-        if part[1] == "java":
+        if fileType == "java":
             src = "/src/main/java/"
-        elif part[1] == "xml":
+        elif fileType == "xml":
             src = "/src/main/resources"
-        path = f'{project_path}{module_path}{src}{package.replace(".", "/")}/{alias}/{TableName}{part[0]}.{part[1]}'
+        path = f'{project_path}{module_path}{src}{package.replace(".", "/")}/{alias}/{TableName}{fileName}.{fileType}'
         # 生成模板文件
         create_file(path, entity_code)
-        print(f'{TableName}{part[0]}.{part[1]}生成成功')
+        print(f'{TableName}{fileName}.{fileType}生成成功')

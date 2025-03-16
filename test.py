@@ -1,46 +1,17 @@
+import json
+import os
 import sys
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QStackedWidget,
-    QVBoxLayout, QHBoxLayout, QLabel, QFrame, QGraphicsDropShadowEffect
+    QVBoxLayout, QHBoxLayout, QLabel
 )
-from PySide6.QtGui import QIcon, QFont, QColor
+from PySide6.QtGui import QIcon, QFont
 from PySide6.QtCore import QEvent
-
+from demo.demo import Demo
 from sidebar import MaterialSidebarButton
+from sql_generator.layout import SqlGenerator
+from template_generator.layout import TemplateGenerator
 from theme import ThemeManager
-
-
-class ContentCard(QFrame):
-    def __init__(self, title, content, parent=None):
-        super().__init__(parent)
-        self.setObjectName("content-card")
-        self.setProperty("class", "content-card")
-
-        # Create drop shadow effect properly
-        shadow = QGraphicsDropShadowEffect(self)
-        shadow.setBlurRadius(10)
-        shadow.setColor(QColor(0, 0, 0, 20))  # rgba(0, 0, 0, 0.08) equivalent
-        shadow.setOffset(0, 2)
-        self.setGraphicsEffect(shadow)
-
-        # Layout
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(20, 20, 20, 20)
-
-        # Title
-        title_label = QLabel(title)
-        title_label.setObjectName("title")
-        title_label.setProperty("class", "title")
-
-        # Content
-        content_label = QLabel(content)
-        content_label.setObjectName("body-text")
-        content_label.setProperty("class", "body-text")
-        content_label.setWordWrap(True)
-
-        layout.addWidget(title_label)
-        layout.addWidget(content_label)
-        layout.addStretch()
 
 
 class MainWindow(QMainWindow):
@@ -49,9 +20,14 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Modern UI Example")
         self.resize(1100, 700)
 
-        # Track theme state
-        self.current_theme = None
+        self.demo = Demo()
+        self.sql_generator = SqlGenerator()
+        self.template_generator = TemplateGenerator()
 
+        self.init_ui()
+        self.load_data()
+
+    def init_ui(self):
         # Main layout
         central_widget = QWidget()
         main_layout = QHBoxLayout(central_widget)
@@ -76,10 +52,9 @@ class MainWindow(QMainWindow):
         # Menu buttons
         self.menu_buttons = []
         menu_items = [
-            {"icon": "home", "text": "Dashboard", "content": "Overview of your system"},
-            {"icon": "analytics", "text": "Analytics", "content": "Data visualization and insights"},
-            {"icon": "settings", "text": "Settings", "content": "Configure your application"},
-            {"icon": "account_circle", "text": "Profile", "content": "Manage your account"}
+            {"icon": "demo", "text": "Dashboard", "content": self.demo},
+            {"icon": "template_generator", "text": "SQL Generator", "content": self.sql_generator},
+            {"icon": "template_generator", "text": "Template Generator", "content": self.template_generator},
         ]
 
         for item in menu_items:
@@ -101,26 +76,7 @@ class MainWindow(QMainWindow):
 
         # Create pages
         for idx, item in enumerate(menu_items):
-            page = QWidget()
-            page_layout = QVBoxLayout(page)
-            page_layout.setContentsMargins(16, 16, 16, 16)
-
-            # Add multiple cards for each page
-            card1 = ContentCard(
-                f"{item['text']} Overview",
-                f"This is the main {item['text'].lower()} card. {item['content']}."
-            )
-
-            card2 = ContentCard(
-                "Additional Information",
-                "This card contains supplementary information related to this section."
-            )
-
-            page_layout.addWidget(card1)
-            page_layout.addWidget(card2)
-            page_layout.addStretch()
-
-            self.content.addWidget(page)
+            self.content.addWidget(item['content'])
 
         # Add widgets to main layout
         main_layout.addWidget(self.sidebar)
@@ -143,22 +99,38 @@ class MainWindow(QMainWindow):
 
     def eventFilter(self, obj, event):
         # Watch for palette change events to update theme
-        if event.type() == QEvent.PaletteChange:
-            self.apply_theme()
+        if event.type() == QEvent.Type.PaletteChange:
+            # Only process if we're not already updating the theme
+            if not hasattr(self, '_updating_theme') or not self._updating_theme:
+                self._updating_theme = True
+                self.apply_theme()
+                self._updating_theme = False
         return super().eventFilter(obj, event)
 
     def apply_theme(self):
         app = QApplication.instance()
         is_dark = ThemeManager.is_dark_mode(app)
-        # Only update if theme changed
-        if self.current_theme != is_dark:
-            self.current_theme = is_dark
-            stylesheet = ThemeManager.apply_stylesheet(app)
-            self.setStyleSheet(stylesheet)
 
-            # Update theme button icon
-            icon_name = "light_mode" if is_dark else "dark_mode"
-            self.theme_btn.setIcon(QIcon(f":/icons/{icon_name}"))
+        # Toggle theme when the button is clicked
+        if self.sender() == self.theme_btn:
+            is_dark = not is_dark
+            self._updating_theme = True
+            ThemeManager.set_dark_mode(app, is_dark)
+            self._updating_theme = False
+
+        # Update current theme state
+        self.current_theme = is_dark
+
+        # Apply stylesheet
+        stylesheet = ThemeManager.apply_stylesheet(app)
+        self._updating_theme = True
+        self.setStyleSheet(stylesheet)
+        self._updating_theme = False
+
+        # Update theme button icon and text
+        icon_name = "light_mode" if is_dark else "dark_mode"
+        self.theme_btn.setIcon(QIcon(f":/icons/{icon_name}"))
+        self.theme_btn.setText("亮色模式" if is_dark else "暗色模式")
 
 
     def switch_page(self):
@@ -174,6 +146,30 @@ class MainWindow(QMainWindow):
 
         # Switch page with a fade effect
         self.content.setCurrentIndex(index)
+
+    def closeEvent(self, event):
+        self.save_data()
+        super().closeEvent(event)
+
+    def save_data(self):
+        # 收集特定生成器的状态
+        data = {
+            "sqlGenerator": self.sql_generator.serialize(),
+            "templateGenerator": self.template_generator.serialize()
+        }
+        with open("app_state.json", "w") as f:
+            json.dump(data, f)
+
+    def load_data(self):
+        """加载时恢复所有控件数据"""
+        if os.path.exists("app_state.json"):
+            with open("app_state.json", "r") as f:
+                data = json.load(f)
+
+        if "sqlGenerator" in data:
+            self.sql_generator.deserialize(data["sqlGenerator"])
+        if "templateGenerator" in data:
+            self.template_generator.deserialize(data["templateGenerator"])
 
 
 if __name__ == "__main__":
