@@ -7,7 +7,7 @@ class ThemeManager:
     def is_dark_mode(app):
         # Check if app is in dark mode based on text color
         palette = app.palette()
-        text_color = palette.color(QPalette.WindowText)
+        text_color = palette.color(QPalette.ColorRole.WindowText)
         return text_color.lightness() > 127
 
     @staticmethod
@@ -68,43 +68,35 @@ class ThemeManager:
             QMainWindow {{
                 background-color: {bg_color};
             }}
-            
-            QPushButton {{
-                padding: 10px 16px;
-            }}
 
             QWidget#sidebar {{
                 background-color: {surface_color};
                 border-right: 1px solid {divider_color};
             }}
 
-            QLabel.sidebar-title {{
+            QLabel#sidebar-title {{
                 color: {on_surface};
                 font-size: 18px;
                 font-weight: bold;
                 padding: 16px 0;
             }}
 
-            QPushButton.sidebar-button {{
+            QPushButton#menu-btn {{
                 background-color: transparent;
                 color: {on_surface};
                 text-align: left;
                 border: none;
                 border-radius: 4px;
                 padding: 12px 16px;
-            }}
-
-            QPushButton.sidebar-button:hover {{
-                background-color: {primary_color}30;
-            }}
-
-            QPushButton.sidebar-button:checked {{
-                background-color: {primary_color}50;
-            }}
-
-            QLabel#sidebar-button-text {{
-                color: {on_surface};
                 font-size: 14px;
+            }}
+
+            QPushButton#menu-btn:hover {{
+                background-color: {primary_color};
+            }}
+
+            QPushButton#menu-btn:checked {{
+                background-color: {primary_color};
             }}
 
             QFrame.content-card {{
@@ -117,10 +109,5 @@ class ThemeManager:
                 color: {on_surface};
                 font-size: 16px;
                 font-weight: bold;
-            }}
-
-            QLabel.body-text {{
-                color: {on_surface};
-                font-size: 14px;
             }}
         """
