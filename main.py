@@ -52,8 +52,8 @@ class MainWindow(QMainWindow):
         # Menu buttons
         self.menu_buttons = []
         menu_items = [
-            {"icon": "demo", "text": "Dashboard", "content": self.demo},
-            {"icon": "template_generator", "text": "SQL Generator", "content": self.sql_generator},
+            {"icon": "home", "text": "Dashboard", "content": self.demo},
+            {"icon": "sql_generator", "text": "SQL Generator", "content": self.sql_generator},
             {"icon": "template_generator", "text": "Template Generator", "content": self.template_generator},
         ]
 
@@ -66,7 +66,7 @@ class MainWindow(QMainWindow):
         sidebar_layout.addStretch()
 
         # Theme toggle button
-        self.theme_btn = MaterialSidebarButton("dark_mode", "Toggle Theme")
+        self.theme_btn = MaterialSidebarButton("moon", "Toggle Theme")
         self.theme_btn.clicked.connect(self.apply_theme)
         sidebar_layout.addWidget(self.theme_btn)
 
@@ -127,8 +127,8 @@ class MainWindow(QMainWindow):
         self._updating_theme = False
 
         # Update theme button icon and text
-        icon_name = "light_mode" if is_dark else "dark_mode"
-        self.theme_btn.setIcon(QIcon(f":/icons/{icon_name}"))
+        icon_name = "light" if is_dark else "moon"
+        self.theme_btn.setIcon(QIcon(f"./icons/{icon_name}"))
         self.theme_btn.setText("亮色模式" if is_dark else "暗色模式")
 
 

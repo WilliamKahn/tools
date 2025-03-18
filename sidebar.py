@@ -8,7 +8,7 @@ class MaterialSidebarButton(QPushButton):
         super().__init__(parent)
         self.setCheckable(True)
         self.setText(text)
-        self.setIcon(QIcon(f":/icons/{icon_name}.svg"))
+        self.setIcon(QIcon(f"./icons/{icon_name}.svg"))
         self.setIconSize(QSize(22, 22))
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setObjectName("menu-btn")
