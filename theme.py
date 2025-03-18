@@ -37,7 +37,7 @@ class ThemeManager:
             palette.setColor(QPalette.ColorRole.ToolTipBase, QColor(255, 255, 255))
             palette.setColor(QPalette.ColorRole.ToolTipText, QColor(33, 33, 33))
             palette.setColor(QPalette.ColorRole.Text, QColor(33, 33, 33))
-            palette.setColor(QPalette.ColorRole.Button, QColor(240, 240, 240))
+            palette.setColor(QPalette.ColorRole.Button, QColor(230, 230, 230))
             palette.setColor(QPalette.ColorRole.ButtonText, QColor(33, 33, 33))
             palette.setColor(QPalette.ColorRole.Link, QColor(25, 118, 210))
             palette.setColor(QPalette.ColorRole.Highlight, QColor(25, 118, 210))
