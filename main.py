@@ -157,7 +157,7 @@ class MainWindow(QMainWindow):
             "templateGenerator": self.template_generator.serialize()
         }
         with open("app_state.json", "w") as f:
-            json.dump(data, f)
+            json.dump(data, f, ensure_ascii=False, indent=4)
 
     def load_data(self):
         """加载时恢复所有控件数据"""

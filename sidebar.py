@@ -1,4 +1,4 @@
-from PySide6.QtCore import QSize, QPropertyAnimation, QEasingCurve, Qt
+from PySide6.QtCore import QSize, QPropertyAnimation, QEasingCurve, Qt, QByteArray
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QPushButton
 
@@ -21,7 +21,7 @@ class MaterialSidebarButton(QPushButton):
         self._text = text
 
         # Animation for icon size change
-        self._animation = QPropertyAnimation(self, b"iconSize")
+        self._animation = QPropertyAnimation(self, QByteArray(b"iconSize"))
         self._animation.setDuration(150)
         self._animation.setEasingCurve(QEasingCurve.Type.OutCubic)
 
@@ -35,7 +35,7 @@ class MaterialSidebarButton(QPushButton):
             self.setToolTip(self._text)
 
         # Add animation for width change
-        anim = QPropertyAnimation(self, b"minimumWidth")
+        anim = QPropertyAnimation(self, QByteArray(b"minimumWidth"))
         anim.setDuration(300)
         anim.setStartValue(self.width())
         anim.setEndValue(self._expanded_width if expanded else self._collapsed_width)
@@ -43,7 +43,7 @@ class MaterialSidebarButton(QPushButton):
         anim.start()
 
         # Also set maximum width to match minimum when collapsed
-        max_anim = QPropertyAnimation(self, b"maximumWidth")
+        max_anim = QPropertyAnimation(self, QByteArray(b"maximumWidth"))
         max_anim.setDuration(300)
         max_anim.setStartValue(self.width())
         max_anim.setEndValue(self._expanded_width if expanded else self._collapsed_width)

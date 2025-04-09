@@ -35,7 +35,7 @@ class SqlGenerator(QFrame):
     def updateTable(self):
         # Since PySide6 QTextEdit doesn't have toMarkdown method
         # we'll use toPlainText instead
-        md_content = self.textEdit.toPlainText()
+        md_content = self.textEdit.toMarkdown()
         rows = []
         # todo 格式校验
         # 格式转换
@@ -71,7 +71,7 @@ class SqlGenerator(QFrame):
         # Replace InfoBar with a temporary notification
         temp_label = QLabel('成功生成sql，已经复制到剪切板', self)
         temp_label.setStyleSheet("background-color: #2196F3; color: white; padding: 8px; border-radius: 4px;")
-        temp_label.setAlignment(Qt.AlignCenter)
+        temp_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Position at top
         temp_label.setGeometry(self.width() // 2 - 150, 10, 300, 40)
@@ -120,7 +120,7 @@ class SqlGenerator(QFrame):
     def serialize(self):
         """序列化保存配置数据"""
         data = {
-            "markdown_content": self.textEdit.toPlainText()  # Using toPlainText instead of toMarkdown
+            "markdown_content": self.textEdit.toMarkdown()  # Using toPlainText instead of toMarkdown
         }
         return data
 
