@@ -5,19 +5,18 @@ from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QStackedWidget,
     QVBoxLayout, QHBoxLayout, QLabel
 )
-from PySide6.QtGui import QIcon, QFont
-from PySide6.QtCore import QEvent
+from PySide6.QtGui import QFont, QPalette
 from demo.demo import Demo
 from sidebar import MaterialSidebarButton
 from sql_generator.layout import SqlGenerator
 from template_generator.layout import TemplateGenerator
-from theme import ThemeManager
+from qt_material import apply_stylesheet
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Modern UI Example")
+        self.setWindowTitle("工具集")
         self.resize(1100, 700)
 
         self.demo = Demo()
@@ -36,21 +35,13 @@ class MainWindow(QMainWindow):
 
         # Sidebar
         self.sidebar = QWidget()
-        self.sidebar.setObjectName("sidebar")
         sidebar_layout = QVBoxLayout(self.sidebar)
         sidebar_layout.setContentsMargins(8, 16, 8, 16)
         sidebar_layout.setSpacing(4)
 
-        # Toggle button
-        # In MainWindow.__init__, change the toggle_btn setup:
-        self.toggle_btn = QLabel("Sidebar")
-        self.toggle_btn.setObjectName("sidebar-title")  # Add an object name
-        self.toggle_btn.setProperty("class", "sidebar-title")  # Add a class
-        sidebar_layout.addWidget(self.toggle_btn)
-        sidebar_layout.addSpacing(10)
-
         # Menu buttons
         self.menu_buttons = []
+        self.content = QStackedWidget()
         menu_items = [
             {"icon": "home", "text": "Dashboard", "content": self.demo},
             {"icon": "sql_generator", "text": "SQL Generator", "content": self.sql_generator},
@@ -59,23 +50,11 @@ class MainWindow(QMainWindow):
 
         for item in menu_items:
             btn = MaterialSidebarButton(item["icon"], item["text"])
+            self.content.addWidget(item['content'])
             btn.clicked.connect(self.switch_page)
             self.menu_buttons.append(btn)
             sidebar_layout.addWidget(btn)
-
         sidebar_layout.addStretch()
-
-        # Theme toggle button
-        self.theme_btn = MaterialSidebarButton("moon", "Toggle Theme")
-        self.theme_btn.clicked.connect(self.apply_theme)
-        sidebar_layout.addWidget(self.theme_btn)
-
-        # Content area
-        self.content = QStackedWidget()
-
-        # Create pages
-        for idx, item in enumerate(menu_items):
-            self.content.addWidget(item['content'])
 
         # Add widgets to main layout
         main_layout.addWidget(self.sidebar)
@@ -89,53 +68,8 @@ class MainWindow(QMainWindow):
         self.menu_buttons[0].setChecked(True)
         self.content.setCurrentIndex(0)
 
-        # Apply theme
-        self.apply_theme()
-
-        # Install event filter to watch for palette changes
-        app = QApplication.instance()
-        app.installEventFilter(self)
-
-    def eventFilter(self, obj, event):
-        # Watch for palette change events to update theme
-        if event.type() == QEvent.Type.PaletteChange:
-            # Only process if we're not already updating the theme
-            if not hasattr(self, '_updating_theme') or not self._updating_theme:
-                self._updating_theme = True
-                self.apply_theme()
-                self._updating_theme = False
-        return super().eventFilter(obj, event)
-
-    def apply_theme(self):
-        app = QApplication.instance()
-        is_dark = ThemeManager.is_dark_mode(app)
-
-        # Toggle theme when the button is clicked
-        if self.sender() == self.theme_btn:
-            is_dark = not is_dark
-            self._updating_theme = True
-            ThemeManager.set_dark_mode(app, is_dark)
-            self._updating_theme = False
-
-        # Update current theme state
-        self.current_theme = is_dark
-
-        # Apply stylesheet
-        stylesheet = ThemeManager.apply_stylesheet(app)
-        self._updating_theme = True
-        self.setStyleSheet(stylesheet)
-        self._updating_theme = False
-
-        # Update theme button icon and text
-        icon_name = "light" if is_dark else "moon"
-        self.theme_btn.setIcon(QIcon(f"./icons/{icon_name}"))
-        self.theme_btn.setText("亮色模式" if is_dark else "暗色模式")
-
-
     def switch_page(self):
         clicked_button = self.sender()
-        if clicked_button == self.theme_btn:
-            return
 
         index = self.menu_buttons.index(clicked_button)
 
@@ -171,6 +105,22 @@ class MainWindow(QMainWindow):
             self.template_generator.deserialize(data["templateGenerator"])
 
 
+def is_dark_mode():
+    # 获取应用程序的调色板
+    palette = QApplication.palette()
+
+    # 获取窗口背景色
+    background_color = palette.color(QPalette.ColorRole.Window)
+
+    # 计算颜色亮度（使用ITU-R BT.709亮度公式）
+    brightness = (0.2126 * background_color.red() +
+                  0.7152 * background_color.green() +
+                  0.0722 * background_color.blue())
+
+    # 如果亮度小于128（0-255范围），认为是暗色模式
+    return brightness < 128
+
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
@@ -178,5 +128,10 @@ if __name__ == "__main__":
     app.setFont(QFont("Segue UI", 10))
 
     window = MainWindow()
+    #获取系统主题色 根据主题色切换主题
+    if is_dark_mode():
+        apply_stylesheet(app, theme='dark_teal.xml')
+    else:
+        apply_stylesheet(app, theme='light_blue.xml')
     window.show()
     sys.exit(app.exec())

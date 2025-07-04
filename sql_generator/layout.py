@@ -67,19 +67,6 @@ class SqlGenerator(QFrame):
                         self.tableWidget.setItem(i, j, QTableWidgetItem(cell.strip()))
         # 列校验 采用特征叠加判断具体列
 
-    def showBottomTip(self):
-        # Replace InfoBar with a temporary notification
-        temp_label = QLabel('成功生成sql，已经复制到剪切板', self)
-        temp_label.setStyleSheet("background-color: #2196F3; color: white; padding: 8px; border-radius: 4px;")
-        temp_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        # Position at top
-        temp_label.setGeometry(self.width() // 2 - 150, 10, 300, 40)
-        temp_label.show()
-
-        # Hide after 2 seconds
-        QTimer.singleShot(2000, temp_label.deleteLater)
-
     def generateSQL(self):
         row_count = self.tableWidget.rowCount()
         col_count = self.tableWidget.columnCount()
@@ -115,7 +102,7 @@ class SqlGenerator(QFrame):
         clipboard = QApplication.clipboard()
         clipboard.setText(create_table_sql)
 
-        self.showBottomTip()
+        QMessageBox.information(self, "提示",'成功生成sql，已经复制到剪切板', QMessageBox.StandardButton.Ok)
 
     def serialize(self):
         """序列化保存配置数据"""
@@ -127,5 +114,5 @@ class SqlGenerator(QFrame):
     def deserialize(self, data):
         """反序列化加载配置数据"""
         if "markdown_content" in data:
-            self.textEdit.setPlainText(data["markdown_content"])  # Using setPlainText instead of setMarkdown
+            self.textEdit.setText(data["markdown_content"])  # Using setPlainText instead of setMarkdown
             # updateTable will be called through the signal connection

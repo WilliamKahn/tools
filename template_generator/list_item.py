@@ -1,7 +1,8 @@
 import os
 
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QFileDialog, QMessageBox, QDialog, \
-    QVBoxLayout, QTextEdit, QPushButton, QTextEdit, QLabel, QFileDialog, QCheckBox, QLineEdit
+    QVBoxLayout, QTextEdit, QPushButton, QTextEdit, QLabel, QFileDialog, QCheckBox, QLineEdit, QSizePolicy
+from PySide6.QtCore import Qt
 
 
 class ListItemWidget(QWidget):
@@ -9,42 +10,62 @@ class ListItemWidget(QWidget):
         super().__init__(parent)
         self.file_path = file_path
 
-        # Set a reasonable fixed height for the widget
-        self.setFixedHeight(40)
+        # 进一步增加控件高度，确保所有文字完整显示
+        self.setFixedHeight(60)
+        self.setMinimumWidth(800)  # 增加最小宽度
 
         layout = QHBoxLayout()
-        layout.setContentsMargins(5, 2, 5, 2)  # Reduce margins
-        layout.setSpacing(8)  # Add spacing between elements
+        layout.setContentsMargins(10, 8, 10, 8)  # 增加边距
+        layout.setSpacing(12)  # 增加控件间距
 
-        # Checkbox takes minimal space
+        # Checkbox - 固定尺寸
         self.checkbox = QCheckBox()
+        self.checkbox.setFixedSize(24, 24)
         layout.addWidget(self.checkbox, 0)
 
-        # Group module and package buttons in a separate layout to save space
+        # 按钮布局 - 给按钮更多空间和更大尺寸
         buttons_layout = QHBoxLayout()
-        buttons_layout.setSpacing(2)
+        buttons_layout.setSpacing(8)
 
         self.module_button = QPushButton("Module")
+        # 修复QSizePolicy的访问方式
+        self.module_button.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.module_button.clicked.connect(self.select_folder)
         buttons_layout.addWidget(self.module_button)
 
         self.package_button = QPushButton("Package")
+        # 修复QSizePolicy的访问方式
+        self.package_button.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.package_button.clicked.connect(self.select_folder)
         buttons_layout.addWidget(self.package_button)
 
-        layout.addLayout(buttons_layout, 1)
+        layout.addLayout(buttons_layout, 0)
 
-        # Alias edit with fixed width
+        # Alias输入框 - 增加宽度和高度
         self.alias_edit = QLineEdit()
         self.alias_edit.setPlaceholderText("Alias")
-        self.alias_edit.setFixedWidth(100)
+        self.alias_edit.setMinimumSize(150, 40)  # 增加输入框尺寸
+        self.alias_edit.setMaximumSize(180, 40)
         layout.addWidget(self.alias_edit, 0)
 
-        # Display text takes all available space
+        # 显示文本 - 占用剩余空间，优化文本显示
         self.display_text = QLabel(os.path.basename(file_path))
-        self.display_text.setToolTip(file_path)  # Show full path on hover
+        self.display_text.setToolTip(file_path)  # 鼠标悬停显示完整路径
         self.display_text.setWordWrap(False)
-        layout.addWidget(self.display_text, 1)  # Give stretch factor 1
+        self.display_text.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+
+        # 设置文本选择和最小高度
+        self.display_text.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+        self.display_text.setMinimumHeight(40)
+        self.display_text.setMaximumHeight(40)
+
+        # 设置边距确保文本完全可见
+        self.display_text.setContentsMargins(8, 0, 8, 0)
+
+        # 移除可能冲突的内联样式，让全局主题接管
+        self.display_text.setObjectName("display-text")
+
+        layout.addWidget(self.display_text, 1)  # 伸展因子为1，占用剩余空间
 
         self.setLayout(layout)
 
@@ -114,7 +135,7 @@ class FileEditor(QDialog):
         super().__init__(parent)
         self.file_path = file_path
         self.setWindowTitle(f"Edit {os.path.basename(file_path)}")
-        self.resize(400, 300)
+        self.resize(500, 400)
 
         layout = QVBoxLayout()
         self.text_edit = QTextEdit()
